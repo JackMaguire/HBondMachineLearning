@@ -51,13 +51,31 @@ def mean_pred( y_true, y_pred ):
 # 1) Generate Data
 
 dataset = numpy.genfromtxt( "sample_data.csv", delimiter=",", skip_header=1 )
-print( len( dataset[ 0 ] ) )
+#print( len( dataset[ 0 ] ) )
 
 input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 
 both_output = dataset[:,0:2]
 output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
+
+num_elements = len( dataset )
+num_training_elements = int( 0.8 * float( num_elements) )
+
+my_assert_equals( "len(input)", len(input), len(both_output) )
+
+training_input = input[ :num_training_elements, : ]
+test_input     = input[ num_training_elements:, : ]
+
+training_output_hbond = output_hbond[ :num_training_elements, : ]
+test_output_hbond     = output_hbond[ num_training_elements:, : ]
+
+training_output_clash = output_clash[ :num_training_elements, : ]
+test_output_clash     = output_clash[ num_training_elements:, : ]
+
+print( "Training on " + str( len (training_input) ) + " elements" )
+print( "Testing on "  + str( len (test_input)     ) + " elements" )
+#exit( 0 )
 
 # 2) Define Model
 
@@ -83,9 +101,9 @@ model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_o
 # 4) Fit Model
 num_epochs=150    #150 is small
 my_batch_size=10  #10  is small
-model.fit( input, output_hbond, epochs=num_epochs, batch_size=my_batch_size )
+model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=my_batch_size )
 
 # 5) Evaluate Model
-scores = model.evaluate( input, output_hbond )
+scores = model.evaluate( test_input, test_output_hbond )
 print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
