@@ -38,6 +38,8 @@ def my_assert_equals( name, actual, theoretical ):
 # START #
 #########
 
+# 1) Generate Data
+
 dataset = numpy.genfromtxt( "sample_data.csv", delimiter=",", skip_header=1 )
 print( len( dataset[ 0 ] ) )
 
@@ -47,7 +49,7 @@ both_output = dataset[:,0:2]
 output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
 
-
+# 2) Define Model
 
 num_input_dimensions = len(input[0]);
 my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
@@ -62,3 +64,7 @@ model.add( Dense( num_neurons_in_second_layer, activation='relu') )
 
 num_neurons_in_third_layer = int( 1 )
 model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
+
+# 3) Compile Model
+
+model.compile( loss='mean_squared_error', optimizer='adam', metrics=['accuracy'] )

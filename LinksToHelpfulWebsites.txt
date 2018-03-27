@@ -1,3 +1,7 @@
 #links
 
+#documentation
+https://keras.io
+
+#tutorials
 https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
