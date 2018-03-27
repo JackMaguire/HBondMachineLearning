@@ -79,3 +79,13 @@ model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
 
 metrics_to_output=[ 'accuracy' ]
 model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_output )
+
+# 4) Fit Model
+num_epochs=150    #150 is small
+my_batch_size=10  #10  is small
+model.fit( input, output_hbond, epochs=num_epochs, batch_size=my_batch_size )
+
+# 5) Evaluate Model
+scores = model.evaluate( input, output_hbond )
+print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
