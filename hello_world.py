@@ -25,6 +25,16 @@ ANGLE2 = int( 11 )
 DIST   = int( 12 )
 
 #########
+# FUNCS #
+#########
+
+def my_assert_equals( name, actual, theoretical ):
+    if actual != theoretical:
+        print( name + " is equal to " + actual + " instead of " + theoretical )
+        exit( 1 )
+
+
+#########
 # START #
 #########
 
@@ -32,4 +42,23 @@ dataset = numpy.genfromtxt( "sample_data.csv", delimiter=",", skip_header=1 )
 print( len( dataset[ 0 ] ) )
 
 input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
-output = dataset[:,0:2]
+
+both_output = dataset[:,0:2]
+output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
+
+
+
+num_input_dimensions = len(input[0]);
+my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
+
+model = Sequential()
+
+num_neurons_in_first_layer = int( 12 )
+model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
+
+num_neurons_in_second_layer = int( 8 )
+model.add( Dense( num_neurons_in_second_layer, activation='relu') )
+
+num_neurons_in_third_layer = int( 1 )
+model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
