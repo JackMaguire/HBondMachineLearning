@@ -8,17 +8,25 @@ import numpy
 
 BEST_POSSIBLE_HBOND_SCORE  = int( 0 )
 WORST_POSSIBLE_CLASH_SCORE = int( 1 )
+
 TX = int( 2 )
 TY = int( 3 )
 TZ = int( 4 )
+
 RX = int( 5 )
 RY = int( 6 )
 RZ = int( 7 )
-#PAIR = int( 8 )
-#CENPACK = int( 9 )
+
+PAIR    = int( 8 )
+CENPACK = int( 9 )
+
 ANGLE1 = int( 10 )
 ANGLE2 = int( 11 )
 DIST   = int( 12 )
+
+#########
+# START #
+#########
 
 dataset = numpy.genfromtxt( "sample_data.csv", delimiter=",", skip_header=1 )
 print( len( dataset[ 0 ] ) )
