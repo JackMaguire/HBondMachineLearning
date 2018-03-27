@@ -1,6 +1,9 @@
 #from keras import *
 from keras.models import Sequential
 from keras.layers import Dense
+from keras import metrics
+
+import keras.backend as K
 import numpy
 
 #13 columns
@@ -33,6 +36,13 @@ def my_assert_equals( name, actual, theoretical ):
         print( name + " is equal to " + actual + " instead of " + theoretical )
         exit( 1 )
 
+
+###########
+# METRICS #
+###########
+
+def mean_pred( y_true, y_pred ):
+    return K.mean( y_pred )
 
 #########
 # START #
@@ -67,4 +77,5 @@ model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
 
 # 3) Compile Model
 
+metrics_to_output=[ ]
 model.compile( loss='mean_squared_error', optimizer='adam', metrics=['accuracy'] )
