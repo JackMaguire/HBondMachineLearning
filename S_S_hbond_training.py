@@ -44,13 +44,24 @@ def my_assert_equals( name, actual, theoretical ):
 def mean_pred( y_true, y_pred ):
     return K.mean( y_pred )
 
+#0 for no hbond
+#1 for any hbond at least -0.5 REU in strength
+#linear interpolation between
+def hbond_score_to_01_scale( hbond_score ):
+    if hbond_score >= 0.0:
+        return 0
+    elif hbond_score <= -0.5:
+        return 1
+    else:
+        return -2.0 * hbond_score
+
 #########
 # START #
 #########
 
 # 1) Generate Data
 
-dataset = numpy.genfromtxt( "sample_data.csv", delimiter=",", skip_header=1 )
+dataset = numpy.genfromtxt( "SS.csv", delimiter=",", skip_header=1 )
 #print( len( dataset[ 0 ] ) )
 
 input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
@@ -70,8 +81,8 @@ test_input     = input[ num_training_elements:, : ]
 training_output_hbond = output_hbond[ :num_training_elements, : ]
 test_output_hbond     = output_hbond[ num_training_elements:, : ]
 
-training_output_clash = output_clash[ :num_training_elements, : ]
-test_output_clash     = output_clash[ num_training_elements:, : ]
+#training_output_clash = output_clash[ :num_training_elements, : ]
+#test_output_clash     = output_clash[ num_training_elements:, : ]
 
 print( "Training on " + str( len (training_input) ) + " elements" )
 print( "Testing on "  + str( len (test_input)     ) + " elements" )
@@ -79,18 +90,18 @@ print( "Testing on "  + str( len (test_input)     ) + " elements" )
 
 # 2) Define Model
 
-num_input_dimensions = len(input[0]);
+num_input_dimensions = len( input[0] );
 my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 
 model = Sequential()
 
-num_neurons_in_first_layer = int( 12 )
+num_neurons_in_first_layer = int( 100 )
 model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
 
-num_neurons_in_second_layer = int( 8 )
+num_neurons_in_second_layer = int( 100 )
 model.add( Dense( num_neurons_in_second_layer, activation='relu') )
 
-num_neurons_in_third_layer = int( 1 )
+num_neurons_in_third_layer = int( 100 )
 model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
 
 # 3) Compile Model
@@ -107,3 +118,5 @@ model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=
 scores = model.evaluate( test_input, test_output_hbond )
 print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
+# 6) Save Model
+model.save( "model.h5" )
