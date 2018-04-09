@@ -1,12 +1,12 @@
-#links
+#Links
 
-#documentation
+#Documentation
 
 https://keras.io
 
 https://keras.io/getting-started/functional-api-guide/#multi-input-and-multi-output-models
 
-#tutorials
+#Tutorials
 
 https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
 
