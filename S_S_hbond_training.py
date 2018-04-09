@@ -88,14 +88,14 @@ dataset = numpy.genfromtxt( datafilename, delimiter=",", skip_header=1 )
 
 input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 
-both_output = dataset[:,0:2]
+#both_output = dataset[:,0:2]
 output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
-output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
+#output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
 
 num_elements = len( dataset )
 num_training_elements = int( 0.8 * float( num_elements) )
 
-my_assert_equals( "len(input)", len(input), len(both_output) )
+my_assert_equals( "len(input)", len(input), len(output_hbond) )
 
 training_input = input[ :num_training_elements, : ]
 test_input     = input[ num_training_elements:, : ]
@@ -134,6 +134,7 @@ model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_o
 # 4) Fit Model
 num_epochs=150    #150 is small
 my_batch_size=10  #10  is small
+exit( 0 )
 model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=my_batch_size )
 
 # 5) Evaluate Model
