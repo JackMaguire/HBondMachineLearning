@@ -6,6 +6,12 @@ from keras import metrics
 import keras.backend as K
 import numpy
 
+import sys
+
+#############
+# CONSTANTS #
+#############
+
 #13 columns
 #best_possible_hbond_score,worst_possible_clash_score,tx,ty,tz,rz,ry,rz,pair,cenpack,angle1,angle2,dist
 
@@ -26,6 +32,16 @@ CENPACK = int( 9 )
 ANGLE1 = int( 10 )
 ANGLE2 = int( 11 )
 DIST   = int( 12 )
+
+#########################
+# COMMAND LINE SETTINGS #
+#########################
+
+if len( sys.argv ) != 2:
+    print( "Lone argument should be data file" )
+    exit( 1 )
+
+datafilename = sys.argv[ 1 ]
 
 #########
 # FUNCS #
@@ -61,7 +77,7 @@ def hbond_score_to_01_scale( hbond_score ):
 
 # 1) Generate Data
 
-dataset = numpy.genfromtxt( "SS.csv", delimiter=",", skip_header=1 )
+dataset = numpy.genfromtxt( datafilename, delimiter=",", skip_header=1 )
 #print( len( dataset[ 0 ] ) )
 
 input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
