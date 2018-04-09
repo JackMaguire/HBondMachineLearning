@@ -8,6 +8,12 @@ import numpy
 
 import sys
 
+########
+# INIT #
+########
+
+numpy.random.seed( 0 )
+
 #############
 # CONSTANTS #
 #############
@@ -106,12 +112,12 @@ print( "Testing on "  + str( len (test_input)     ) + " elements" )
 
 # 2) Define Model
 
-num_input_dimensions = len( input[0] );
+num_input_dimensions = len( input[0] )
 my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 
 model = Sequential()
 
-num_neurons_in_first_layer = int( 100 )
+num_neurons_in_first_layer = int( 9 )
 model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
 
 num_neurons_in_second_layer = int( 100 )
