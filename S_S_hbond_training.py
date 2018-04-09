@@ -117,13 +117,14 @@ my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 
 model = Sequential()
 
+#num_neurons_in_nth_layer will have their own variables in case we want to reference them later.
 num_neurons_in_first_layer = int( 9 )
 model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
 
 num_neurons_in_second_layer = int( 100 )
 model.add( Dense( num_neurons_in_second_layer, activation='relu') )
 
-num_neurons_in_third_layer = int( 100 )
+num_neurons_in_third_layer = int( 1 )
 model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
 
 # 3) Compile Model
@@ -134,7 +135,6 @@ model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_o
 # 4) Fit Model
 num_epochs=150    #150 is small
 my_batch_size=10  #10  is small
-exit( 0 )
 model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=my_batch_size )
 
 # 5) Evaluate Model
