@@ -118,14 +118,17 @@ my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 model = Sequential()
 
 #num_neurons_in_nth_layer will have their own variables in case we want to reference them later.
-num_neurons_in_first_layer = int( 9 )
+num_neurons_in_first_layer = int( 100 )
 model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
 
 num_neurons_in_second_layer = int( 100 )
 model.add( Dense( num_neurons_in_second_layer, activation='relu') )
 
-num_neurons_in_third_layer = int( 1 )
-model.add( Dense( num_neurons_in_third_layer, activation='sigmoid') )
+num_neurons_in_third_layer = int( 100 )
+model.add( Dense( num_neurons_in_third_layer, activation='relu') )
+
+num_neurons_in_fourth_layer = int( 1 )
+model.add( Dense( num_neurons_in_fourth_layer, activation='sigmoid') )
 
 # 3) Compile Model
 
