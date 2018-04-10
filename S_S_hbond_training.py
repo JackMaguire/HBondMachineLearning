@@ -8,6 +8,8 @@ import numpy
 
 import sys
 
+import argparse
+
 ########
 # INIT #
 ########
@@ -43,11 +45,16 @@ DIST   = int( 12 )
 # COMMAND LINE SETTINGS #
 #########################
 
-if len( sys.argv ) != 2:
-    print( "Lone argument should be data file" )
-    exit( 1 )
+parser = argparse.ArgumentParser()
+parser.add_argument( "-i", help="Input data file" )
+args = parser.parse_args()
 
-datafilename = sys.argv[ 1 ]
+if( args.i ):
+    datafilename = sys.argv[ 1 ]
+else:
+    print( "The -i argument is required" )
+    parser.parse_args( ['-h'] )
+    exit( 0 )
 
 #########
 # FUNCS #
@@ -121,14 +128,13 @@ model = Sequential()
 num_neurons_in_first_layer = int( 100 )
 model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
 
-num_neurons_in_second_layer = int( 100 )
-model.add( Dense( num_neurons_in_second_layer, activation='relu') )
+num_intermediate_layers = int( 4 )
+num_neurons_in_intermediate_layers = int( 100 )
+for x in range( 0, num_intermediate_layers ):
+    model.add( Dense( num_neurons_in_intermediate_layers, activation='relu') )
 
-num_neurons_in_third_layer = int( 100 )
-model.add( Dense( num_neurons_in_third_layer, activation='relu') )
-
-num_neurons_in_fourth_layer = int( 1 )
-model.add( Dense( num_neurons_in_fourth_layer, activation='sigmoid') )
+num_neurons_in_final_layer = int( 1 )
+model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
 
 # 3) Compile Model
 
