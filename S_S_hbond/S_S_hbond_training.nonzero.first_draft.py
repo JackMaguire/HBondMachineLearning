@@ -50,7 +50,7 @@ parser.add_argument( "-i", help="Input data file" )
 args = parser.parse_args()
 
 if( args.i ):
-    datafilename = sys.argv[ 1 ]
+    datafilename = args.i
 else:
     print( "The -i argument is required" )
     parser.parse_args( ['-h'] )
@@ -73,17 +73,6 @@ def my_assert_equals( name, actual, theoretical ):
 def mean_pred( y_true, y_pred ):
     return K.mean( y_pred )
 
-#0 for no hbond
-#1 for any hbond at least -0.5 REU in strength
-#linear interpolation between
-def hbond_score_to_01_scale( hbond_score ):
-    if hbond_score >= 0.0:
-        return 0
-    elif hbond_score <= -0.5:
-        return 1
-    else:
-        return -2.0 * hbond_score
-
 #########
 # START #
 #########
@@ -98,6 +87,13 @@ input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 #both_output = dataset[:,0:2]
 output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 #output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
+
+#scale hbond scores
+for x in output_hbond:
+    for i in range( 0, len(x) ):
+        x[i] *= -1
+        if x[i] > 1:
+            x[i] = 1
 
 num_elements = len( dataset )
 num_training_elements = int( 0.8 * float( num_elements) )
