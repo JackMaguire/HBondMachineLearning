@@ -46,7 +46,15 @@ DIST   = int( 12 )
 #########################
 
 parser = argparse.ArgumentParser()
-parser.add_argument( "-i", help="Input data file" )
+
+parser.add_argument( "-i", help="Input data file", required=True )
+parser.add_argument( "--num_neurons_in_first_hidden_layer", help="Number of neruons for first hidden layer.", default="100", type=int, required=False )
+parser.add_argument( "--num_neurons_in_intermediate_hidden_layer", help="Number of neruons for intermediate hidden layer.", default="100", type=int, required=False )
+parser.add_argument( "--num_intermediate_hidden_layers", help="Number of intermediate hidden layers.", default="4", type=int, required=False )
+
+parser.add_argument( "--num_epochs", help="Number of epochs to give to model.fit()", default="150", type=int, required=False )
+parser.add_argument( "--batch_size", help="Batch size to give to model.fit()", default="10", type=int, required=False )
+
 args = parser.parse_args()
 
 if( args.i ):
@@ -55,6 +63,23 @@ else:
     print( "The -i argument is required" )
     parser.parse_args( ['-h'] )
     exit( 0 )
+
+num_neurons_in_first_hidden_layer = args.num_neurons_in_first_hidden_layer
+print( "num_neurons_in_first_hidden_layer: " + str( num_neurons_in_first_hidden_layer ) )
+
+num_neurons_in_intermediate_hidden_layer = args.num_neurons_in_intermediate_hidden_layer
+print( "num_neurons_in_intermediate_hidden_layer: " + str( num_neurons_in_intermediate_hidden_layer ) )
+
+num_intermediate_hidden_layers = args.num_intermediate_hidden_layers
+print( "num_intermediate_hidden_layers: " + str( num_intermediate_hidden_layers ) )
+
+num_epochs = args.num_epochs #150 is small
+print( "num_epochs: " + str( num_epochs ) )
+
+my_batch_size = args.batch_size #10 is small
+print( "batch_size: " + str( my_batch_size ) )
+exit( 0 )
+
 
 #########
 # FUNCS #
@@ -121,13 +146,10 @@ my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 model = Sequential()
 
 #num_neurons_in_nth_layer will have their own variables in case we want to reference them later.
-num_neurons_in_first_layer = int( 100 )
-model.add( Dense( num_neurons_in_first_layer, input_dim=len( input[0] ), activation='relu') )
+model.add( Dense( num_neurons_in_first_hidden_layer, input_dim=len( input[0] ), activation='relu') )
 
-num_intermediate_layers = int( 4 )
-num_neurons_in_intermediate_layers = int( 100 )
-for x in range( 0, num_intermediate_layers ):
-    model.add( Dense( num_neurons_in_intermediate_layers, activation='relu') )
+for x in range( 0, num_intermediate_hidden_layers ):
+    model.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
 
 num_neurons_in_final_layer = int( 1 )
 model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
@@ -138,8 +160,6 @@ metrics_to_output=[ 'accuracy' ]
 model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_output )
 
 # 4) Fit Model
-num_epochs=150    #150 is small
-my_batch_size=10  #10  is small
 model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=my_batch_size )
 
 # 5) Evaluate Model
