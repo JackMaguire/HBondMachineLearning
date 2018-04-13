@@ -76,10 +76,8 @@ print( "num_intermediate_hidden_layers: " + str( num_intermediate_hidden_layers 
 num_epochs = args.num_epochs #150 is small
 print( "num_epochs: " + str( num_epochs ) )
 
-my_batch_size = args.batch_size #10 is small
+my_batch_size = args.batch_size #10 \is small
 print( "batch_size: " + str( my_batch_size ) )
-exit( 0 )
-
 
 #########
 # FUNCS #
