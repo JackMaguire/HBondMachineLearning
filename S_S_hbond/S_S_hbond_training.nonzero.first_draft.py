@@ -48,7 +48,7 @@ DIST   = int( 12 )
 parser = argparse.ArgumentParser()
 
 parser.add_argument( "--train", help="Input data file for training", required=True )
-parser.add_argument( "--test", help="Input data file for testing", required=False )
+parser.add_argument( "--test", help="Input data file for testing", required=True )
 
 parser.add_argument( "--num_neurons_in_first_hidden_layer", help="Number of neruons for first hidden layer.", default="100", type=int, required=False )
 parser.add_argument( "--num_neurons_in_intermediate_hidden_layer", help="Number of neruons for intermediate hidden layer.", default="100", type=int, required=False )
@@ -95,6 +95,16 @@ def my_assert_equals( name, actual, theoretical ):
         print( name + " is equal to " + actual + " instead of " + theoretical )
         exit( 1 )
 
+
+###########
+# CLASSES #
+###########
+class LossHistory(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+
+    def on_batch_end(self, batch, logs={}):
+        self.losses.append(logs.get('loss'))
 
 ###########
 # METRICS #
@@ -161,9 +171,13 @@ metrics_to_output=[ 'accuracy' ]
 model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_output )
 
 # 4) Fit Model
-history = model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, validation_split=0, shuffle=False )
+history = LossHistory()
+model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, validation_split=0, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond) )
+
 
 # 5) Evaluate Model
+print(history.losses)
+
 if test_input is None:
     #what should we do here?
     print( "No data to test" )
