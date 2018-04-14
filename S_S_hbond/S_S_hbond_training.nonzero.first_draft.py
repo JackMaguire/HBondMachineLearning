@@ -4,6 +4,8 @@ from keras.layers import Dense
 from keras import metrics
 
 import keras.backend as K
+import keras.callbacks
+import keras
 import numpy
 
 import sys
@@ -66,10 +68,8 @@ else:
     parser.parse_args( ['-h'] )
     exit( 0 )
 
-test_datafilename = ""
-if( args.test ):
-    test_datafilename = args.test
-    print( "test_datafilename: " + test_datafilename )
+test_datafilename = args.test
+print( "test_datafilename: " + test_datafilename )
 
 num_neurons_in_first_hidden_layer = args.num_neurons_in_first_hidden_layer
 print( "num_neurons_in_first_hidden_layer: " + str( num_neurons_in_first_hidden_layer ) )
@@ -136,19 +136,16 @@ for x in training_output_hbond:
         if x[i] > 1:
             x[i] = 1
 
-if( len(test_datafilename) > 0 ):
-    test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0 )
-    test_input = test_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
-    test_output_hbond = test_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
-    for x in test_output_hbond:
-        for i in range( 0, len(x) ):
-            x[i] *= -1
-            if x[i] > 1:
-                x[i] = 1
-    del test_dataset
-    print( "Testing on "  + str( len (test_input)     ) + " elements" )
-else :
-    print( "Testing on 0 elements" )
+test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0 )
+test_input = test_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+test_output_hbond = test_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+for x in test_output_hbond:
+    for i in range( 0, len(x) ):
+        x[i] *= -1
+        if x[i] > 1:
+            x[i] = 1
+del test_dataset
+print( "Testing on "  + str( len (test_input)     ) + " elements" )
 
 # 2) Define Model
 
@@ -172,7 +169,7 @@ model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_o
 
 # 4) Fit Model
 history = LossHistory()
-model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, validation_split=0, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond) )
+model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond) )
 
 
 # 5) Evaluate Model
