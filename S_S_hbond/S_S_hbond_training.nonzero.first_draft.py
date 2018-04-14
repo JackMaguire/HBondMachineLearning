@@ -47,7 +47,9 @@ DIST   = int( 12 )
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument( "-i", help="Input data file", required=True )
+parser.add_argument( "--train", help="Input data file for training", required=True )
+parser.add_argument( "--test", help="Input data file for testing", required=False )
+
 parser.add_argument( "--num_neurons_in_first_hidden_layer", help="Number of neruons for first hidden layer.", default="100", type=int, required=False )
 parser.add_argument( "--num_neurons_in_intermediate_hidden_layer", help="Number of neruons for intermediate hidden layer.", default="100", type=int, required=False )
 parser.add_argument( "--num_intermediate_hidden_layers", help="Number of intermediate hidden layers.", default="4", type=int, required=False )
@@ -57,12 +59,17 @@ parser.add_argument( "--batch_size", help="Batch size to give to model.fit()", d
 
 args = parser.parse_args()
 
-if( args.i ):
-    datafilename = args.i
+if( args.train ):
+    train_datafilename = args.train
 else:
-    print( "The -i argument is required" )
+    print( "The --train argument is required" )
     parser.parse_args( ['-h'] )
     exit( 0 )
+
+test_datafilename = ""
+if( args.test ):
+    test_datafilename = args.test
+    print( "test_datafilename: " + test_datafilename )
 
 num_neurons_in_first_hidden_layer = args.num_neurons_in_first_hidden_layer
 print( "num_neurons_in_first_hidden_layer: " + str( num_neurons_in_first_hidden_layer ) )
@@ -102,14 +109,15 @@ def mean_pred( y_true, y_pred ):
 
 # 1) Generate Data
 
-dataset = numpy.genfromtxt( datafilename, delimiter=",", skip_header=1 )
-#print( len( dataset[ 0 ] ) )
+dataset = numpy.genfromtxt( train_datafilename, delimiter=",", skip_header=0 )
+training_input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+training_output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 
-input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+num_training_elements = len ( dataset )
+my_assert_equals( "len(input)", len(input), len(output_hbond) )
+print( "Training on " + str( len (training_input) ) + " elements" )
 
-#both_output = dataset[:,0:2]
-output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
-#output_clash = dataset[:,[ WORST_POSSIBLE_CLASH_SCORE ] ]
+del dataset
 
 #scale hbond scores
 for x in output_hbond:
@@ -118,23 +126,19 @@ for x in output_hbond:
         if x[i] > 1:
             x[i] = 1
 
-num_elements = len( dataset )
-num_training_elements = int( 0.8 * float( num_elements) )
-
-my_assert_equals( "len(input)", len(input), len(output_hbond) )
-
-training_input = input[ :num_training_elements, : ]
-test_input     = input[ num_training_elements:, : ]
-
-training_output_hbond = output_hbond[ :num_training_elements, : ]
-test_output_hbond     = output_hbond[ num_training_elements:, : ]
-
-#training_output_clash = output_clash[ :num_training_elements, : ]
-#test_output_clash     = output_clash[ num_training_elements:, : ]
-
-print( "Training on " + str( len (training_input) ) + " elements" )
-print( "Testing on "  + str( len (test_input)     ) + " elements" )
-#exit( 0 )
+if( len(test_datafilename) > 0 ):
+    test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0 )
+    test_input = test_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+    test_output_hbond = test_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+    for x in test_output_hbond:
+        for i in range( 0, len(x) ):
+            x[i] *= -1
+            if x[i] > 1:
+                x[i] = 1
+    del test_dataset
+    print( "Testing on "  + str( len (test_input)     ) + " elements" )
+else :
+    print( "Testing on 0 elements" )
 
 # 2) Define Model
 
@@ -158,7 +162,7 @@ metrics_to_output=[ 'accuracy' ]
 model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_output )
 
 # 4) Fit Model
-model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=my_batch_size )
+history = model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, validation_split=0, shuffle=False )
 
 # 5) Evaluate Model
 scores = model.evaluate( test_input, test_output_hbond )
