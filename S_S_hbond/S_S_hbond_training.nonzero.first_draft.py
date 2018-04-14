@@ -114,13 +114,13 @@ training_input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 training_output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 
 num_training_elements = len ( dataset )
-my_assert_equals( "len(input)", len(input), len(output_hbond) )
+my_assert_equals( "len(input)", len(training_input), len(training_output_hbond) )
 print( "Training on " + str( len (training_input) ) + " elements" )
 
 del dataset
 
 #scale hbond scores
-for x in output_hbond:
+for x in training_output_hbond:
     for i in range( 0, len(x) ):
         x[i] *= -1
         if x[i] > 1:
@@ -142,13 +142,12 @@ else :
 
 # 2) Define Model
 
-num_input_dimensions = len( input[0] )
+num_input_dimensions = len( training_input[0] )
 my_assert_equals( "num_input_dimensions", num_input_dimensions, 9 )
 
 model = Sequential()
 
-#num_neurons_in_nth_layer will have their own variables in case we want to reference them later.
-model.add( Dense( num_neurons_in_first_hidden_layer, input_dim=len( input[0] ), activation='relu') )
+model.add( Dense( num_neurons_in_first_hidden_layer, input_dim=num_input_dimensions, activation='relu') )
 
 for x in range( 0, num_intermediate_hidden_layers ):
     model.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
@@ -165,8 +164,12 @@ model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_o
 history = model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, validation_split=0, shuffle=False )
 
 # 5) Evaluate Model
-scores = model.evaluate( test_input, test_output_hbond )
-print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+if test_input is None:
+    #what should we do here?
+    print( "No data to test" )
+else:
+    scores = model.evaluate( test_input, test_output_hbond )
+    print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # 6) Save Model
 model.save( "model.h5" )
