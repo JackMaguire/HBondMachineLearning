@@ -192,7 +192,7 @@ model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_
 
 # 4) Fit Model
 history = LossHistory()
-model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond) )
+model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond), class_weight={0:1, 1:1000} )
 
 
 # 5) Evaluate Model
