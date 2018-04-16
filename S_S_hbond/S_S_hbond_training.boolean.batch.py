@@ -166,7 +166,7 @@ for i in range( 0, len(cached_training_input) ):
     numpy.save( cached_training_input[ i ], training_input_temp )
     numpy.save( cached_training_output_hbond[ i ], training_output_hbond_temp )
 
-indices = [ 1, 2, 3, 4, 5, 6, 7 ]
+indices = [ 0, 1, 2, 3, 4, 5, 6 ]
 
 # 2) Define Model
 
