@@ -137,7 +137,7 @@ training_output_hbond = training_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 
 my_assert_equals( "len(input)", len(training_input), len(training_output_hbond) )
 
-del dataset
+del training_dataset
 
 test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0 )
 #test_dataset = [x for x in test_dataset if keep_hbond_score( x ) ]
