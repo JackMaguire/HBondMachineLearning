@@ -118,8 +118,8 @@ def keep_hbond_score( score ):
 def generate_data_from_file( filename ):
     dataset = numpy.genfromtxt( filename, delimiter=",", skip_header=0 )
 
-    input = training_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
-    output_hbond = training_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+    input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+    output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 
     for x in output_hbond:
         for i in range( 0, len(x) ):
@@ -178,6 +178,7 @@ model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_
 #model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond), class_weight={0:1, 1:1000} )
 
 for x in range( 0, num_epochs ):
+    print( "Beginning epoch: " + str(x) )
     random.shuffle( training_input_files )
     for training_input_filename in training_input_files:
         training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
