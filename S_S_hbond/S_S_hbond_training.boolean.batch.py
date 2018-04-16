@@ -12,6 +12,7 @@ import sys
 
 import argparse
 import random
+import time
 
 ########
 # INIT #
@@ -58,7 +59,7 @@ parser.add_argument( "--num_neurons_in_intermediate_hidden_layer", help="Number 
 parser.add_argument( "--num_intermediate_hidden_layers", help="Number of intermediate hidden layers.", default="4", type=int, required=False )
 
 parser.add_argument( "--num_epochs", help="Number of epochs to give to model.fit()", default="150", type=int, required=False )
-parser.add_argument( "--batch_size", help="Batch size to give to model.fit()", default="10", type=int, required=False )
+#parser.add_argument( "--batch_size", help="Batch size to give to model.fit()", default="10", type=int, required=False )
 
 parser.add_argument( "--test_predictions", help="filename for test predictions", default="", required=False )
 
@@ -86,8 +87,8 @@ print( "num_intermediate_hidden_layers: " + str( num_intermediate_hidden_layers 
 num_epochs = args.num_epochs #150 is small
 print( "num_epochs: " + str( num_epochs ) )
 
-my_batch_size = args.batch_size #10 \is small
-print( "batch_size: " + str( my_batch_size ) )
+#my_batch_size = args.batch_size #10 \is small
+#print( "batch_size: " + str( my_batch_size ) )
 
 test_predictions = args.test_predictions
 if( len(test_predictions) > 0 ):
@@ -178,6 +179,7 @@ model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_
 #model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond), class_weight={0:1, 1:1000} )
 
 for x in range( 0, num_epochs ):
+    start = time.time()
     print( "Beginning epoch: " + str(x) )
     random.shuffle( training_input_files )
     for training_input_filename in training_input_files:
@@ -185,6 +187,8 @@ for x in range( 0, num_epochs ):
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:1000} )
     if ( x % 25 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
+    end = time.time()
+    print( "\tseconds: " + str( end - start ) )
 
 # 6) Save Model
 model.save( "model.h5" )
