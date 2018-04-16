@@ -95,6 +95,16 @@ def my_assert_equals( name, actual, theoretical ):
         print( name + " is equal to " + actual + " instead of " + theoretical )
         exit( 1 )
 
+def keep_hbond_score( score ):
+    hbond_score = score[ BEST_POSSIBLE_HBOND_SCORE ]
+    print( score )
+    print( hbond_score )
+    exit( 0 )
+    if score == 0:
+        return true
+    if score <= -0.5:
+        return true
+    return false
 
 ###########
 # CLASSES #
@@ -119,32 +129,27 @@ def mean_pred( y_true, y_pred ):
 
 # 1) Generate Data
 
-dataset = numpy.genfromtxt( train_datafilename, delimiter=",", skip_header=0 )
-training_input = dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
-training_output_hbond = dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+training_dataset = numpy.genfromtxt( train_datafilename, delimiter=",", skip_header=0 )
+#training_dataset = [x for x in training_dataset if keep_hbond_score( x ) ]
 
-num_training_elements = len ( dataset )
+training_input = training_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
+training_output_hbond = training_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+
 my_assert_equals( "len(input)", len(training_input), len(training_output_hbond) )
-print( "Training on " + str( len (training_input) ) + " elements" )
 
 del dataset
 
-#scale hbond scores
-for x in training_output_hbond:
-    for i in range( 0, len(x) ):
-        x[i] *= -1
-        if x[i] > 1:
-            x[i] = 1
-
 test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0 )
+#test_dataset = [x for x in test_dataset if keep_hbond_score( x ) ]
+
 test_input = test_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 test_output_hbond = test_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
-for x in test_output_hbond:
-    for i in range( 0, len(x) ):
-        x[i] *= -1
-        if x[i] > 1:
-            x[i] = 1
+
+my_assert_equals( "len(input)", len(test_input), len(test_output_hbond) )
+
 del test_dataset
+
+print( "Training on " + str( len (training_input) ) + " elements" )
 print( "Testing on "  + str( len (test_input)     ) + " elements" )
 
 # 2) Define Model
