@@ -197,15 +197,15 @@ for x in range( 0, num_epochs ):
     random.shuffle( indices )
     for i in indices:
     #for training_input_filename in training_input_files:
-        t1 = time.time()
+        #t1 = time.time()
         training_input_temp = numpy.load( cached_training_input[ i ] )
         training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
         #training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
-        t2 = time.time()
+        #t2 = time.time()
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:1000} )
-        t3 = time.time()
-        print( "Seconds spent loading: " + str( t2 - t1 ) )
-        print( "Seconds spent training: " + str( t3 - t2) )
+        #t3 = time.time()
+        #print( "Seconds spent loading: " + str( t2 - t1 ) )
+        #print( "Seconds spent training: " + str( t3 - t2) )
     if ( x % 5 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
     end = time.time()
