@@ -23,3 +23,7 @@ Try this for favoring false positives over false negatives
 https://datascience.stackexchange.com/questions/13490/how-to-set-class-weights-for-imbalanced-classes-in-keras
 
 https://groups.google.com/forum/#!searchin/keras-users/class$20weights|sort:date/keras-users/LYo7sqE75N4/xwVmeLxQAgAJ
+
+##Generating Data On-The-Fly
+
+https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly.html
