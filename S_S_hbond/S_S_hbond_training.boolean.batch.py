@@ -156,6 +156,18 @@ input_file_path = "/Volumes/My Book/tensorflow_hbonds_and_clashes/S_S/no_middle_
 training_input_files = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ]
 testing_input_files = [ "split_ah", "split_ai", "split_aj" ]
 
+cached_training_input = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ]
+cached_training_output_hbond = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ] 
+for i in range( 0, len(cached_training_input) ):
+    cached_training_input[ i ] = input_file_path + "cached_training_input_" + str(i) + ".npy"
+    cached_training_output_hbond[ i ] = input_file_path + "cached_training_output_hbond_" + str(i) + ".npy"
+
+    training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_files[ i ] )
+    numpy.save( cached_training_input[ i ], training_input_temp )
+    numpy.save( cached_training_output_hbond[ i ], training_output_hbond_temp )
+
+indices = [ 1, 2, 3, 4, 5, 6, 7 ]
+
 # 2) Define Model
 
 num_input_dimensions = 9
@@ -181,10 +193,19 @@ model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_
 for x in range( 0, num_epochs ):
     start = time.time()
     print( "Beginning epoch: " + str(x) )
-    random.shuffle( training_input_files )
-    for training_input_filename in training_input_files:
-        training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
+    #random.shuffle( training_input_files )
+    random.shuffle( indices )
+    for i in indices:
+    #for training_input_filename in training_input_files:
+        t1 = time.time()
+        training_input_temp = numpy.load( cached_training_input[ i ] )
+        training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
+        #training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
+        t2 = time.time()
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:1000} )
+        t3 = time.time()
+        print( "Seconds spent loading: " + str( t2 - t1 ) )
+        print( "Seconds spent training: " + str( t3 - t2) )
     if ( x % 5 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
     end = time.time()
@@ -195,6 +216,7 @@ model.save( "model.h5" )
 
 # 7) Print Predicitons
 if( len(test_predictions) > 0 ):
+    start = time.time()
     test_predictions_file = open ( test_predictions, "w" )
     for test_filename in testing_input_files:
         test_input, test_output_hbond = generate_data_from_file( input_file_path + test_filename )
@@ -205,4 +227,6 @@ if( len(test_predictions) > 0 ):
             actual = test_output_hbond[ i ][ 0 ]
             prediction = model.predict( numpy.transpose( temp_array ) )
             test_predictions_file.write( str( actual ) + "\t" + str( prediction[0][0] ) + "\n" )
+    end = time.time()
+    print( "Took " + str( end - start ) + " seconds to evaluate test data to disk!" )
 
