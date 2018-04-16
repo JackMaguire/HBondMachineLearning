@@ -135,6 +135,11 @@ training_dataset = numpy.genfromtxt( train_datafilename, delimiter=",", skip_hea
 training_input = training_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 training_output_hbond = training_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
 
+for x in training_output_hbond:
+    for i in range( 0, len(x) ):
+        if x[i] != 0:
+            x[i] = 1
+
 my_assert_equals( "len(input)", len(training_input), len(training_output_hbond) )
 
 del training_dataset
@@ -144,6 +149,11 @@ test_dataset = numpy.genfromtxt( test_datafilename, delimiter=",", skip_header=0
 
 test_input = test_dataset[:,[ TX, TY, TZ, RX, RY, RZ, ANGLE1, ANGLE2, DIST ] ]
 test_output_hbond = test_dataset[:,[ BEST_POSSIBLE_HBOND_SCORE  ] ]
+
+for x in test_output_hbond:
+    for i in range( 0, len(x) ):
+        if x[i] != 0:
+            x[i] = 1
 
 my_assert_equals( "len(input)", len(test_input), len(test_output_hbond) )
 
