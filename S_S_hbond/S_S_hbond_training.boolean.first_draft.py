@@ -180,7 +180,7 @@ model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
 # 3) Compile Model
 
 metrics_to_output=[ 'accuracy' ]
-model.compile( loss='mean_squared_error', optimizer='adam', metrics=metrics_to_output )
+model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
 
 # 4) Fit Model
 history = LossHistory()
