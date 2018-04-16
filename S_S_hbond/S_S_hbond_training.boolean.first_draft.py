@@ -59,6 +59,8 @@ parser.add_argument( "--num_intermediate_hidden_layers", help="Number of interme
 parser.add_argument( "--num_epochs", help="Number of epochs to give to model.fit()", default="150", type=int, required=False )
 parser.add_argument( "--batch_size", help="Batch size to give to model.fit()", default="10", type=int, required=False )
 
+parser.add_argument( "--test_predictions", help="filename for test predictions", default="", required=False )
+
 args = parser.parse_args()
 
 if( args.train ):
@@ -85,6 +87,12 @@ print( "num_epochs: " + str( num_epochs ) )
 
 my_batch_size = args.batch_size #10 \is small
 print( "batch_size: " + str( my_batch_size ) )
+
+test_predictions = args.test_predictions
+if( len(test_predictions) > 0 ):
+    print( "Will save test predictions to " + test_predictions )
+else:
+    print( "Will not save test predictions because --test_predictions was not given" )
 
 #########
 # FUNCS #
@@ -199,3 +207,15 @@ else:
 
 # 6) Save Model
 model.save( "model.h5" )
+
+# 7) Print Predicitons
+if( len(test_predictions) > 0 ):
+    test_predictions_file = open ( test_predictions, "w" )
+    for i in range( 0, len( test_input ) ):
+        temp_array = numpy.zeros( shape=( 9, 1 ) )
+        for j in range( 0, 9 ):
+            temp_array[ j ][ 0 ] = test_input[ i ][ j ]
+        actual = test_output_hbond[ i ][ 0 ]
+        prediction = model.predict( numpy.transpose( temp_array ) )
+        test_predictions_file.write( str( actual ) + "\t" + str( prediction[0][0] ) + "\n" )
+
