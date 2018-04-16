@@ -15,3 +15,11 @@ https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
 https://keras.io/getting-started/faq/#how-can-i-use-keras-with-datasets-that-dont-fit-in-memory
 
 https://github.com/keras-team/keras/blob/master/examples/cifar10_cnn.py
+
+##Class Weights
+
+Try this for favoring false positives over false negatives
+
+https://datascience.stackexchange.com/questions/13490/how-to-set-class-weights-for-imbalanced-classes-in-keras
+
+https://groups.google.com/forum/#!searchin/keras-users/class$20weights|sort:date/keras-users/LYo7sqE75N4/xwVmeLxQAgAJ
