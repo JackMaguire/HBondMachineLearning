@@ -185,7 +185,7 @@ for x in range( 0, num_epochs ):
     for training_input_filename in training_input_files:
         training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:1000} )
-    if ( x % 25 == 0 ):
+    if ( x % 5 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
