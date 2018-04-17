@@ -24,8 +24,8 @@ numpy.random.seed( 0 )
 # CONSTANTS #
 #############
 
-#13 columns
-#best_possible_hbond_score,worst_possible_clash_score,tx,ty,tz,rz,ry,rz,pair,cenpack,angle1,angle2,dist
+#0                         1                          2  3  4  5  6  7  8      9      10
+#best_possible_hbond_score,worst_possible_clash_score,tx,ty,tz,rz,ry,rz,angle1,angle2,dist
 
 BEST_POSSIBLE_HBOND_SCORE  = int( 0 )
 WORST_POSSIBLE_CLASH_SCORE = int( 1 )
@@ -38,12 +38,9 @@ RX = int( 5 )
 RY = int( 6 )
 RZ = int( 7 )
 
-PAIR    = int( 8 )
-CENPACK = int( 9 )
-
-ANGLE1 = int( 10 )
-ANGLE2 = int( 11 )
-DIST   = int( 12 )
+ANGLE1 = int( 8 )
+ANGLE2 = int( 9 )
+DIST   = int( 10 )
 
 #########################
 # COMMAND LINE SETTINGS #
