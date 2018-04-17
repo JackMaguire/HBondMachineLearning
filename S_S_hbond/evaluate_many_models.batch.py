@@ -71,18 +71,22 @@ for x in range( 2, len( sys.argv ) ):
 
 num_models = len( all_models )
 
-num_positives_actual = np.zeros( num_models )
-num_positives_predicted = np.zeros( num_models )
-num_positives_actual_and_predicted = np.zeros( num_models )
+num_positives_actual = numpy.zeros( num_models )
+num_positives_predicted = numpy.zeros( num_models )
+num_positives_actual_and_predicted = numpy.zeros( num_models )
 
-num_negatives_actual = np.zeros( num_models )
-num_negatives_predicted = np.zeros( num_models )
-num_negatives_actual_and_predicted = np.zeros( num_models )
+num_negatives_actual = numpy.zeros( num_models )
+num_negatives_predicted = numpy.zeros( num_models )
+num_negatives_actual_and_predicted = numpy.zeros( num_models )
 
-for h in range( 2, len( sys.argv ) ):
+input_data_filenames = [
+    "data_source/no_middle_hbond_data/LOG_no_middle_data_split/test_ah",
+    "data_source/no_middle_hbond_data/LOG_no_middle_data_split/test_ai",
+    "data_source/no_middle_hbond_data/LOG_no_middle_data_split/test_aj"
+]
 
-    filename = sys.argv[ h ]
-    #print( filename )
+#for h in range( 2, len( sys.argv ) ):
+for filename in input_data_filenames:
     test_input, test_output_hbond = generate_data_from_file( filename )
 
     for i in range( 0, len(test_input) ):
@@ -112,15 +116,13 @@ for h in range( 2, len( sys.argv ) ):
 
             
 for k in range(0, num_models ):
-
-
-print(
-    sys.argv[ 1 + k ] + " " +
-    str(num_positives_actual[k]_and_predicted[k]) + " " +
-    str(num_positives_actual[k]) + " " +
-    str(num_positives_actual[k]_and_predicted[k]/num_positives_actual[k]) + " " +
-    str(num_negatives_actual[k]_and_predicted[k]) + " " +
-    str(num_negatives_actual[k]) + " " +
-    str(num_negatives_actual[k]_and_predicted[k]/num_negatives_actual[k])
-)
+    print(
+        sys.argv[ 1 + k ] + " " +
+        str(num_positives_actual_and_predicted[k]) + " " +
+        str(num_positives_actual[k]) + " " +
+        str(num_positives_actual_and_predicted[k]/num_positives_actual[k]) + " " +
+        str(num_negatives_actual_and_predicted[k]) + " " +
+        str(num_negatives_actual[k]) + " " +
+        str(num_negatives_actual_and_predicted[k]/num_negatives_actual[k])
+        )
 
