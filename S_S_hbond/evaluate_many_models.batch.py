@@ -63,16 +63,21 @@ def generate_data_from_file( filename ):
 #first: modelname
 #rest: datafile names
 
-model_filename = sys.argv[ 1 ]
-model = load_model( model_filename )
+first_model_filename = sys.argv[ 1 ]
+model = load_model( first_model_filename )
+all_models = [ model for x in range( 1, len( sys.argv ) ) ]
+for x in range( 2, len( sys.argv ) ):
+    all_models[ x - 1 ] = load_model( sys.argv[ x ] )
 
-num_positives_actual = 0.
-num_positives_predicted = 0.
-num_positives_actual_and_predicted = 0.
+num_models = len( all_models )
 
-num_negatives_actual = 0.
-num_negatives_predicted = 0.
-num_negatives_actual_and_predicted = 0.
+num_positives_actual = np.zeros( num_models )
+num_positives_predicted = np.zeros( num_models )
+num_positives_actual_and_predicted = np.zeros( num_models )
+
+num_negatives_actual = np.zeros( num_models )
+num_negatives_predicted = np.zeros( num_models )
+num_negatives_actual_and_predicted = np.zeros( num_models )
 
 for h in range( 2, len( sys.argv ) ):
 
@@ -87,31 +92,35 @@ for h in range( 2, len( sys.argv ) ):
             temp_array[ j ][ 0 ] = test_input[ i ][ j ]
 
         actual = test_output_hbond[ i ][ 0 ]
-        prediction = model.predict( numpy.transpose( temp_array ) )[0][0]
+        for k in range( 0, num_models ):
+            prediction = all_models[ k ].predict( numpy.transpose( temp_array ) )[0][0]
 
-        #print( str(actual) + " " + str(prediction) )
-        #continue
-        if actual == 0:
-            num_negatives_actual += 1
-            if prediction < 0.5:
-                num_negatives_predicted += 1
-                num_negatives_actual_and_predicted += 1
+            if actual == 0:
+                num_negatives_actual [ k ] += 1
+                if prediction < 0.5:
+                    num_negatives_predicted [ k ] += 1
+                    num_negatives_actual_and_predicted [ k ] += 1
+                else:
+                    num_positives_predicted [ k ] += 1
             else:
-                num_positives_predicted += 1
-        else:
-            num_positives_actual += 1
-            if prediction < 0.5:
-                num_negatives_predicted += 1
-            else:
-                num_positives_actual_and_predicted += 1
-                num_positives_predicted += 1
+                num_positives_actual [ k ] += 1
+                if prediction < 0.5:
+                    num_negatives_predicted [ k ] += 1
+                else:
+                    num_positives_actual_and_predicted [ k ] += 1
+                    num_positives_predicted [ k ] += 1
 
             
-print( str(num_positives_actual_and_predicted) + " " +
-       str(num_positives_actual) + " " +
-       str(num_positives_actual_and_predicted/num_positives_actual) + " " +
-       str(num_negatives_actual_and_predicted) + " " +
-       str(num_negatives_actual) + " " +
-       str(num_negatives_actual_and_predicted/num_negatives_actual)
+for k in range(0, num_models ):
+
+
+print(
+    sys.argv[ 1 + k ] + " " +
+    str(num_positives_actual[k]_and_predicted[k]) + " " +
+    str(num_positives_actual[k]) + " " +
+    str(num_positives_actual[k]_and_predicted[k]/num_positives_actual[k]) + " " +
+    str(num_negatives_actual[k]_and_predicted[k]) + " " +
+    str(num_negatives_actual[k]) + " " +
+    str(num_negatives_actual[k]_and_predicted[k]/num_negatives_actual[k])
 )
 
