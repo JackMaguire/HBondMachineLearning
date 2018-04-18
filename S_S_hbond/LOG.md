@@ -23,7 +23,7 @@ Overnight April 17-18 2018
 
 Command:
 ```sh
-TODO
+python S_S_hbond_training.boolean.batch.py --num_epochs 5000 --test_predictions test_pred.second_run.txt
 ```
 
 ## Changes:
@@ -37,3 +37,19 @@ TODO
 ## Results:
 
 TODO
+
+
+# Third Set of Runs
+
+c2e094eb1dc9eabec050042a54b0aa726c903300
+
+April 18, 2018
+
+Command:
+```sh
+python S_S_hbond_training.boolean.batch.py --num_epochs 1005
+```
+
+## Changes:
+
+- All training data is now shuffled before train_on_batch() is called
