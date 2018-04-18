@@ -128,7 +128,14 @@ Command:
 python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 ```
 
-##Changes:
+## Changes:
+
+-At some point in Andrew Ng's youtube videos,
+he mentions that input parameters should be scaled to
+be roughly in the range of -1 < x < 1 with a mean of roughly 0.
+I found the min and max values for each column and
+created a funciton (shown below) for each column to normalize
+the input parameters in this manner.
 
 | Value  | Min   | Max  | Fxn              |
 | ------ | ----- | ---- | ---------------- |
