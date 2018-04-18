@@ -113,6 +113,19 @@ def keep_hbond_score( score ):
         return true
     return false
 
+def normalize_single_input( input ):
+    input[0] /= 20. #Tx
+    input[1] /= 20. #Ty
+    input[2] /= 20. #Tz
+        
+    input[3] /= 3.14 #Rx
+    input[4] /= 3.14 #Ry
+    input[5] -= 1.6  #Rz
+
+    input[6] -= 1.6 #Theta1
+    input[7] -= 1.6 #Theta2
+    input[8] = (input[8]/15.) - 1 #D
+
 def generate_data_from_file( filename ):
     dataset = numpy.genfromtxt( filename, delimiter=",", skip_header=0 )
 
@@ -126,7 +139,10 @@ def generate_data_from_file( filename ):
                 exit( 1 )
             if x[i] != 0:
                 x[i] = 1
-
+     
+    for x in input:
+        normalize_single_input( x )
+   
     return input, output_hbond
 
 #https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
