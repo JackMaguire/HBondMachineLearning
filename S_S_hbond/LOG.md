@@ -34,6 +34,8 @@ Notable points:
 |   900 | 0.999487 | 0.946965 |
 
 
+
+
 # Second Set Of Runs
 
 372240e57fecb706075330f043c1d81fbbd781f9
@@ -86,6 +88,11 @@ Notable points:
 |   960 | 0.999150 | 0.979291 |
 |   970 | 0.999128 | 0.979458 |
 
+
+
+
+
+
 # Third Set of Runs
 
 2643eb0080f379693af369651747ee57cd1e2ba5
@@ -102,3 +109,35 @@ python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 ## Changes:
 
 - All training data is now shuffled before train_on_batch() is called
+
+
+
+
+
+
+# Fourth Set of Runs
+
+SHA
+
+Succeeds: TODO
+
+DATE TODO
+
+Command:
+```sh
+python S_S_hbond_training.boolean.batch.py --num_epochs 1005
+```
+
+##Changes:
+
+| Value  | Min   | Max  | Fxn              |
+| ------ | ----- | ---- | ---------------- |
+| Tx     | -20.1 | 21.7 | `y = x/20`       |
+| Ty     | -28.4 | 15.4 | `y = x/20`       |
+| Tz     | -18.9 | 22.2 | `y = x/20`       |
+| Rx     | -3.14 | 3.14 | `y = x/pi`       |
+| Ry     | -3.14 | 3.14 | `y = x/pi`       |
+| Rz     | 0     | 3.12 | `y = x - 1.5`    |
+| Theta1 | 0     | 3.14 | `y = x - 1.5`    |
+| Theta2 | 0     | 3.14 | `y = x - 1.5`    |
+| D      | 0     | 28.6 | `y = (x/15) - 1` |
