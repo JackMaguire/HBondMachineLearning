@@ -121,6 +121,9 @@ def generate_data_from_file( filename ):
 
     for x in output_hbond:
         for i in range( 0, len(x) ):
+            if x[i] > 0:
+                print( "Some hbond value is positive! " + str(x[i]) )
+                exit( 1 )
             if x[i] != 0:
                 x[i] = 1
 
