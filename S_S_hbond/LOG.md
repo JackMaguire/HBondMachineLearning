@@ -13,6 +13,25 @@ Ran for 1000 epochs with 7,000,000 training data points and ~3,000,000 testing d
 
 ![data_pics/FirstSetOfData.png](data_pics/FirstSetOfData.png)
 
+Notable points:
+
+| Epoch | Frac Pos | Frac Neg |
+| ----- | -------- | -------- |
+|   340 | 0.999170 | 0.959964 |
+|   350 | 0.998989 | 0.962374 |
+|   360 | 0.999245 | 0.960012 |
+
+| Epoch | Frac Pos | Frac Neg |
+| ----- | -------- | -------- |		  
+|   590 | 0.999441 | 0.948047 |
+|   600 | 0.999426 | 0.949833 |
+|   610 | 1        | 0.020882 |
+
+| Epoch | Frac Pos | Frac Neg |
+| ----- | -------- | -------- |
+|   880 | 0.999140 | 0.950444 |
+|   890 | 0.999713 | 0.939725 |
+|   900 | 0.999487 | 0.946965 |
 
 
 # Second Set Of Runs
