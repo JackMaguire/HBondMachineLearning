@@ -38,6 +38,8 @@ Notable points:
 
 372240e57fecb706075330f043c1d81fbbd781f9
 
+Succeeds: First Set
+
 Overnight April 17-18 2018
 
 Command:
@@ -87,6 +89,8 @@ Notable points:
 # Third Set of Runs
 
 2643eb0080f379693af369651747ee57cd1e2ba5
+
+Succeeds: Second Set
 
 April 18, 2018
 
