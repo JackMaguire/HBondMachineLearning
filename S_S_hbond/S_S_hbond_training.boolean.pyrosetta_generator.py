@@ -20,6 +20,9 @@ import time
 
 numpy.random.seed( 0 )
 
+from rosetta import *
+init()
+
 #############
 # CONSTANTS #
 #############

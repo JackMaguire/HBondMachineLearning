@@ -149,7 +149,7 @@ def mean_pred( y_true, y_pred ):
 #########
 
 # 1) Define Filenames
-input_file_path = "/Volumes/My Book/tensorflow_hbonds_and_clashes/S_S/no_middle_hbond_data/LOG_no_middle_data_split/"
+input_file_path = "/Volumes/My Book/tensorflow_hbonds_and_clashes/S_S/no_middle_hbond_data/"
 training_input_files = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ]
 testing_input_files = [ "split_ah", "split_ai", "split_aj" ]
 
