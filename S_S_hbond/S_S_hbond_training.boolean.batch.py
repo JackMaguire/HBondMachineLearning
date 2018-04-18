@@ -126,6 +126,12 @@ def generate_data_from_file( filename ):
 
     return input, output_hbond
 
+#https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
+def shuffle_in_unison(a, b):
+    rng_state = numpy.random.get_state()
+    numpy.random.shuffle(a)
+    numpy.random.set_state(rng_state)
+    numpy.random.shuffle(b)
 
 ###########
 # CLASSES #
@@ -191,10 +197,10 @@ for x in range( 0, num_epochs ):
     for i in indices:
         training_input_temp = numpy.load( cached_training_input[ i ] )
         training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
-
-        c = list(zip(training_input_temp, training_output_hbond_temp))
-        random.shuffle(c)
-        training_input_temp, training_output_hbond_temp = zip(*c)
+        shuffle_in_unison(training_input_temp,training_output_hbond_temp)
+        #c = list(zip(training_input_temp, training_output_hbond_temp))
+        #random.shuffle(c)
+        #training_input_temp, training_output_hbond_temp = zip(*c)
 
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:100} )
     if ( x % 5 == 0 ):
