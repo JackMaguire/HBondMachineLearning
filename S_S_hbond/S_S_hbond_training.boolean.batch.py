@@ -24,8 +24,8 @@ numpy.random.seed( 0 )
 # CONSTANTS #
 #############
 
-#13 columns
-#best_possible_hbond_score,worst_possible_clash_score,tx,ty,tz,rz,ry,rz,pair,cenpack,angle1,angle2,dist
+#0                         1                          2  3  4  5  6  7  8      9      10
+#best_possible_hbond_score,worst_possible_clash_score,tx,ty,tz,rz,ry,rz,angle1,angle2,dist
 
 BEST_POSSIBLE_HBOND_SCORE  = int( 0 )
 WORST_POSSIBLE_CLASH_SCORE = int( 1 )
@@ -38,12 +38,9 @@ RX = int( 5 )
 RY = int( 6 )
 RZ = int( 7 )
 
-PAIR    = int( 8 )
-CENPACK = int( 9 )
-
-ANGLE1 = int( 10 )
-ANGLE2 = int( 11 )
-DIST   = int( 12 )
+ANGLE1 = int( 8 )
+ANGLE2 = int( 9 )
+DIST   = int( 10 )
 
 #########################
 # COMMAND LINE SETTINGS #
@@ -116,6 +113,19 @@ def keep_hbond_score( score ):
         return true
     return false
 
+def normalize_single_input( input ):
+    input[0] /= 20. #Tx
+    input[1] /= 20. #Ty
+    input[2] /= 20. #Tz
+        
+    input[3] /= 3.14 #Rx
+    input[4] /= 3.14 #Ry
+    input[5] -= 1.6  #Rz
+
+    input[6] -= 1.6 #Theta1
+    input[7] -= 1.6 #Theta2
+    input[8] = (input[8]/15.) - 1 #D
+
 def generate_data_from_file( filename ):
     dataset = numpy.genfromtxt( filename, delimiter=",", skip_header=0 )
 
@@ -124,11 +134,23 @@ def generate_data_from_file( filename ):
 
     for x in output_hbond:
         for i in range( 0, len(x) ):
+            if x[i] > 0:
+                print( "Some hbond value is positive! " + str(x[i]) )
+                exit( 1 )
             if x[i] != 0:
                 x[i] = 1
-
+     
+    for x in input:
+        normalize_single_input( x )
+   
     return input, output_hbond
 
+#https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
+def shuffle_in_unison(a, b):
+    rng_state = numpy.random.get_state()
+    numpy.random.shuffle(a)
+    numpy.random.set_state(rng_state)
+    numpy.random.shuffle(b)
 
 ###########
 # CLASSES #
@@ -152,7 +174,7 @@ def mean_pred( y_true, y_pred ):
 #########
 
 # 1) Define Filenames
-input_file_path = "/Volumes/My Book/tensorflow_hbonds_and_clashes/S_S/no_middle_hbond_data/LOG_no_middle_data_split/"
+input_file_path = "/Volumes/My Book/tensorflow_hbonds_and_clashes/S_S/no_middle_hbond_data/"
 training_input_files = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ]
 testing_input_files = [ "split_ah", "split_ai", "split_aj" ]
 
@@ -186,33 +208,36 @@ model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
 metrics_to_output=[ 'accuracy' ]
 model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
 
-# 4) Fit Model
-#history = LossHistory()
-#model.fit( x=training_input, y=training_output_hbond, epochs=num_epochs, batch_size=my_batch_size, shuffle=False, callbacks=[history], validation_data=(test_input, test_output_hbond), class_weight={0:1, 1:1000} )
+# Extra: Create second identical model
+model2 = Sequential()
+model2.add( Dense( num_neurons_in_first_hidden_layer, input_dim=num_input_dimensions, activation='relu') )
+for x in range( 0, num_intermediate_hidden_layers ):
+    model2.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
+model2.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
+model2.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
 
+
+# 4) Fit Model
 for x in range( 0, num_epochs ):
     start = time.time()
     print( "Beginning epoch: " + str(x) )
-    #random.shuffle( training_input_files )
     random.shuffle( indices )
     for i in indices:
-    #for training_input_filename in training_input_files:
-        #t1 = time.time()
         training_input_temp = numpy.load( cached_training_input[ i ] )
         training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
-        #training_input_temp, training_output_hbond_temp = generate_data_from_file( input_file_path + training_input_filename )
-        #t2 = time.time()
-        model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:1000} )
-        #t3 = time.time()
-        #print( "Seconds spent loading: " + str( t2 - t1 ) )
-        #print( "Seconds spent training: " + str( t3 - t2) )
+        shuffle_in_unison(training_input_temp,training_output_hbond_temp)
+
+        model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:100} )
+        model2.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:10} )
     if ( x % 5 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
+        model2.save( "epoch2_" + str(x) + ".h5" )
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
 # 6) Save Model
 model.save( "model.h5" )
+model2.save( "model2.h5" )
 
 # 7) Print Predicitons
 if( len(test_predictions) > 0 ):
