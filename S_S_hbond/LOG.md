@@ -1,3 +1,5 @@
+[[_TOC_]]
+
 # First Set Of Runs
 
 Somewhere around c18ba5ee3809fdca409d9b6a5639db87608e3704
