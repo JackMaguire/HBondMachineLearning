@@ -3,3 +3,6 @@
 
 #model output
 *.h5
+
+#Misc
+~*
