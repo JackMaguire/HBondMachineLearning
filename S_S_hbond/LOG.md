@@ -156,3 +156,5 @@ the input parameters in this manner.
 | Theta1 | 0     | 3.14 | `y = x - 1.6`    |
 | Theta2 | 0     | 3.14 | `y = x - 1.6`    |
 | D      | 0     | 28.6 | `y = (x/15) - 1` |
+
+-Run "B" uses class weights {0:1, 1:10} while run "A" still uses {0:1, 1:100}
