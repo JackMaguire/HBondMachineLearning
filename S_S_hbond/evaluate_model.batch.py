@@ -9,7 +9,7 @@ import keras.backend as K
 import numpy
 
 import sys
-
+import os.path
 import argparse
 
 ########
@@ -40,6 +40,19 @@ ANGLE1 = int( 8 )
 ANGLE2 = int( 9 )
 DIST   = int( 10 )
 
+def normalize_single_input( input ):
+    input[0] /= 20. #Tx
+    input[1] /= 20. #Ty
+    input[2] /= 20. #Tz
+        
+    input[3] /= 3.14 #Rx
+    input[4] /= 3.14 #Ry
+    input[5] -= 1.6  #Rz
+
+    input[6] -= 1.6 #Theta1
+    input[7] -= 1.6 #Theta2
+    input[8] = (input[8]/15.) - 1 #D
+
 def generate_data_from_file( filename ):
     dataset = numpy.genfromtxt( filename, delimiter=",", skip_header=0 )
 
@@ -48,10 +61,20 @@ def generate_data_from_file( filename ):
 
     for x in output_hbond:
         for i in range( 0, len(x) ):
+            if x[i] > 0:
+                print( "Some hbond value is positive! " + str(x[i]) )
+                exit( 1 )
             if x[i] != 0:
                 x[i] = 1
-
+     
+    for x in input:
+        normalize_single_input( x )
+   
     return input, output_hbond
+
+def replace_last_instance_of_substring(s, old, new):
+    li = s.rsplit(old, 1)
+    return new.join(li)
 
 #########################
 # COMMAND LINE SETTINGS #
@@ -74,9 +97,21 @@ num_negatives_actual_and_predicted = 0.
 for h in range( 2, len( sys.argv ) ):
 
     filename = sys.argv[ h ]
-    #print( filename )
-    test_input, test_output_hbond = generate_data_from_file( filename )
 
+    input_cache_filename = filename + ".input.npy"
+    hbond_cache_filename = filename + ".hbond.npy"
+
+    input_cache_filename = replace_last_instance_of_substring( input_cache_filename, "/", "/_" )
+    hbond_cache_filename = replace_last_instance_of_substring( hbond_cache_filename, "/", "/_" )
+
+    if os.path.isfile( input_cache_filename ) and os.path.isfile( hbond_cache_filename ):
+        test_input = numpy.load( input_cache_filename )
+        test_output_hbond = numpy.load( hbond_cache_filename )
+    else:
+        test_input, test_output_hbond = generate_data_from_file( filename )
+        numpy.save( input_cache_filename, test_input )
+        numpy.save( hbond_cache_filename, test_output_hbond )
+        
     predictions = model.predict( x=test_input );
 
     #print( str(len(test_input)) + " " + str(len(predictions)))
