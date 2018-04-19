@@ -223,7 +223,7 @@ for x in range( 0, num_epochs ):
 
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:100} )
     if ( x % 5 == 0 ):
-        model.save( "new_epoch_" + str(x) + ".h5" )
+        model.save( "epoch_" + str(x) + ".h5" )
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
