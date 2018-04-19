@@ -111,17 +111,25 @@ python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 - All training data is now shuffled before train_on_batch() is called
 
 
+## Results:
+
+![data_pics/ThirdSetOfData.png](data_pics/ThirdSetOfData.png)
+
+Notable points:
+
+| Epoch | Frac Pos | Frac Neg |
+| ----- | -------- | -------- |
 
 
 
 
-# Fourth Set of Runs
+# Fourth Set of Runs (A&B)
 
-SHA
+899fd48cbce6096558bb8ed73603e0c790133eed
 
-Succeeds: TODO
+Succeeds: Third Set
 
-DATE TODO
+April 19 - 20
 
 Command:
 ```sh
