@@ -208,6 +208,15 @@ model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
 metrics_to_output=[ 'accuracy' ]
 model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
 
+# Extra: Create second identical model
+model2 = Sequential()
+model2.add( Dense( num_neurons_in_first_hidden_layer, input_dim=num_input_dimensions, activation='relu') )
+for x in range( 0, num_intermediate_hidden_layers ):
+    model2.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
+model2.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
+model2.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
+
+
 # 4) Fit Model
 for x in range( 0, num_epochs ):
     start = time.time()
@@ -217,18 +226,18 @@ for x in range( 0, num_epochs ):
         training_input_temp = numpy.load( cached_training_input[ i ] )
         training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
         shuffle_in_unison(training_input_temp,training_output_hbond_temp)
-        #c = list(zip(training_input_temp, training_output_hbond_temp))
-        #random.shuffle(c)
-        #training_input_temp, training_output_hbond_temp = zip(*c)
 
         model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:100} )
+        model2.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:10} )
     if ( x % 5 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
+        model2.save( "epoch2_" + str(x) + ".h5" )
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
 # 6) Save Model
 model.save( "model.h5" )
+model2.save( "model2.h5" )
 
 # 7) Print Predicitons
 if( len(test_predictions) > 0 ):
