@@ -123,7 +123,7 @@ Notable points:
 
 
 
-# Fourth Set of Runs (A&B)
+# Fourth Set of Runs (A & B)
 
 899fd48cbce6096558bb8ed73603e0c790133eed
 
@@ -138,7 +138,9 @@ python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 
 ## Changes:
 
--At some point in Andrew Ng's youtube videos,
+- Run "B" uses class weights {0:1, 1:10} while run "A" still uses {0:1, 1:100}
+
+- At some point in Andrew Ng's youtube videos,
 he mentions that input parameters should be scaled to
 be roughly in the range of -1 < x < 1 with a mean of roughly 0.
 I found the min and max values for each column and
@@ -156,5 +158,3 @@ the input parameters in this manner.
 | Theta1 | 0     | 3.14 | `y = x - 1.6`    |
 | Theta2 | 0     | 3.14 | `y = x - 1.6`    |
 | D      | 0     | 28.6 | `y = (x/15) - 1` |
-
--Run "B" uses class weights {0:1, 1:10} while run "A" still uses {0:1, 1:100}
