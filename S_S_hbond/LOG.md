@@ -1,3 +1,5 @@
+[Back To Table](../README.md)
+
 # First Set Of Runs
 
 Somewhere around c18ba5ee3809fdca409d9b6a5639db87608e3704
@@ -128,13 +130,13 @@ Notable points:
 
 
 
-# Fourth Set of Runs (A & B)
+# Fourth Set of Runs (A-D)
 
 899fd48cbce6096558bb8ed73603e0c790133eed
 
 Succeeds: Third Set
 
-April 19 - 20
+April 19 (morning) - 20 (evening)
 
 Command:
 ```sh
@@ -143,7 +145,15 @@ python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 
 ## Changes:
 
-- Run "B" uses class weights {0:1, 1:10} while run "A" still uses {0:1, 1:100}
+- This generation is split into several runs,
+each with a different set of class weights:
+
+| Run | Class 0 Weight | Class 1 Weight |
+| --- | -------------- | -------------- |
+|  A  | 1              | 100		|
+|  B  | 1	       | 10		|
+|  C  | 1	       | 3 		|
+|  D  | 1	       | 1		|
 
 - At some point in Andrew Ng's youtube videos,
 he mentions that input parameters should be scaled to
@@ -163,3 +173,47 @@ the input parameters in this manner.
 | Theta1 | 0     | 3.14 | `y = x - 1.6`    |
 | Theta2 | 0     | 3.14 | `y = x - 1.6`    |
 | D      | 0     | 28.6 | `y = (x/15) - 1` |
+
+## Results:
+
+### Run A
+
+![data_pics/FourthSetOfData.A.png](data_pics/FourthSetOfData.A.png)
+
+| Epoch | Frac Pos | Frac Neg | Min    |
+| ----- | -------- | -------- | ------ |
+| 420   | 0.998978 | 0.979571 | 0.9795 |
+| 980   | 0.998892 | 0.979374 | 0.9793 |
+| 1000  | 0.999271 | 0.979264 | 0.9792 |
+| 430   | 0.998985 | 0.979240 | 0.9792 |
+| 960   | 0.999250 | 0.978866 | 0.9788 |
+| 930   | 0.999214 | 0.978604 | 0.9786 |
+| 970   | 0.999335 | 0.978554 | 0.9785 |
+| 940   | 0.999250 | 0.978276 | 0.9782 |
+| 400   | 0.999228 | 0.978158 | 0.9781 |
+| 410   | 0.999128 | 0.978105 | 0.9781 |
+
+### Run B
+
+![data_pics/FourthSetOfData.B.png](data_pics/FourthSetOfData.B.png)
+
+| Epoch | Frac Pos | Frac Neg | Min    |
+| ----- | -------- | -------- | ------ |
+| 930   | 0.992322 | 0.992686 | 0.9923 |
+| 910   | 0.992165 | 0.992775 | 0.9921 |
+| 870   | 0.991865 | 0.992500 | 0.9918 |
+| 850   | 0.991850 | 0.992291 | 0.9918 |
+| 840   | 0.993186 | 0.991587 | 0.9915 |
+| 940   | 0.991558 | 0.993083 | 0.9915 |
+| 900   | 0.994186 | 0.991500 | 0.9915 |
+| 860   | 0.994414 | 0.991309 | 0.9913 |
+| 830   | 0.993836 | 0.991224 | 0.9912 |
+| 780   | 0.992822 | 0.991210 | 0.9912 |
+
+### Run C
+
+![data_pics/FourthSetOfData.C.png](data_pics/FourthSetOfData.C.png)
+
+### Run D
+
+![data_pics/FourthSetOfData.D.png](data_pics/FourthSetOfData.D.png)

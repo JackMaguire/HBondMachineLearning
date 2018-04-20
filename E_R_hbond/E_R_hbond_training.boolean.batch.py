@@ -227,17 +227,17 @@ for x in range( 0, num_epochs ):
         training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
         shuffle_in_unison(training_input_temp,training_output_hbond_temp)
 
-        model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:100} )
-        model2.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:10} )
+        model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={0:1, 1:3} )
+        model2.train_on_batch( x=training_input_temp, y=training_output_hbond_temp )
     if ( x % 5 == 0 ):
-        model.save( "epoch_" + str(x) + ".h5" )
-        model2.save( "epoch2_" + str(x) + ".h5" )
+        model.save( "epochC_" + str(x) + ".h5" )
+        model2.save( "epochD_" + str(x) + ".h5" )
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
 # 6) Save Model
-model.save( "model.h5" )
-model2.save( "model2.h5" )
+#model.save( "model.h5" )
+#model2.save( "model2.h5" )
 
 # 7) Print Predicitons
 if( len(test_predictions) > 0 ):
