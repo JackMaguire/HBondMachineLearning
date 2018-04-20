@@ -14,7 +14,6 @@ Trying to use Keras to predict the HBNet interaction energies between two residu
 | T |                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .|                     |                     | T |
 | W |                    .|                    .|                    .|                    ?|                    .|                    .|                    ?|                    .|                    .|                    ?|                     | W |
 | Y |                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .|                    .| Y |
-| - |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          | - |
 |   |          D          |          E          |          H          |          K          |          N          |          Q          |          R          |          S          |          T          |          W          |          Y          |   |
 
 Legend:
