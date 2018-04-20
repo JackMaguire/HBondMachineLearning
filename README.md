@@ -1,5 +1,13 @@
 # HBondMachineLearning
-Trying to use Keras to predict the HBNet interaction energies between two residues given only their relative backbone coordinates.
+
+Given two protein residue backbones floating in space,
+I want to be able to predict which pairs of amino acids
+would be able to form hydrogen bonds.
+This could save us time and memory in protocols such as HBNet by
+eliminating amino acids from the packer task at the very beginning of the protocol
+if they are not predicted to be able to form hydrogen bonds.
+
+## Results
 
 |   |          D          |          E          |          H          |          K          |          N          |          Q          |          R          |          S          |          T          |          W          |          Y          |   |
 | - |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          |          -          | - |
