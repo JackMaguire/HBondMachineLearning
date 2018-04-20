@@ -128,13 +128,13 @@ Notable points:
 
 
 
-# Fourth Set of Runs (A & B)
+# Fourth Set of Runs (A-D)
 
 899fd48cbce6096558bb8ed73603e0c790133eed
 
 Succeeds: Third Set
 
-April 19 - 20
+April 19 (morning) - 20 (evening)
 
 Command:
 ```sh
@@ -143,7 +143,15 @@ python S_S_hbond_training.boolean.batch.py --num_epochs 1005
 
 ## Changes:
 
-- Run "B" uses class weights {0:1, 1:10} while run "A" still uses {0:1, 1:100}
+- This generation is split into several runs,
+each with a different set of class weights:
+
+| Run | Class 0 Weight | Class 1 Weight |
+| --- | -------------- | -------------- |
+|  A  | 1              | 100		|
+|  B  | 1	       | 10		|
+|  C  | 1	       | 3 		|
+|  D  | 1	       | 1		|
 
 - At some point in Andrew Ng's youtube videos,
 he mentions that input parameters should be scaled to
