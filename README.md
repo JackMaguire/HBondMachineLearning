@@ -31,4 +31,4 @@ Legend:
 | x      | Job is done. The 'x' should contain a link to the log file for that job |
 | .      | Job has not been done yet |
 | ?      | Job has been skipped due to the inability for these residues to form hydrogen bonds |
-| (blank)| This cell is redundant, check the bottom left corner of the chart for it's twin |
+| (blank)| This cell is redundant, check the bottom left corner of the chart for its twin |
