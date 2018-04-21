@@ -46,3 +46,15 @@ Based off of [the 4th generation of S_S runs](../S_S_hbond/LOG.md)
 ### Run D
 
 ![data_pics/FirstSetOfData.D.png](data_pics/FirstSetOfData.D.png)
+
+### Comparison
+
+To compare the 4 runs, I am using a metric I am calling pseudofitness for lack of a better name.
+
+```py
+Pseudofitness( epoch_x ) = MAX( f(epoch_0) ... f(epoch_x) )
+
+f( epoch_x ) =  MIN( epoch_x.positive_predictive_score, epoch_x.negative_predictive_score )
+```
+
+![data_pics/E_R_ABCD.png](data_pics/E_R_ABCD.png)
