@@ -3,6 +3,7 @@
 - Using data stored in tensorflow_hbonds.4.22.2018.tar.gz
 
 
+
 | Directory | Num Test Points | Num Training Points | Total Num Positive Points | Frac of Points Positive (total) | Total Num Positive Training Points | Frac of Points Positive (training) | Training Class Weight Ratio |
 | --------- | --------------- | ------------------- | ------------------------- | ------------------------------- | ---------------------------------- | ---------------------------------- | --------------------------- |
 | D_H/ | 2956788 | 7000000 | 511973 | 0.05 | 359980 | 0.05 | 9.72 |
