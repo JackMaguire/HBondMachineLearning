@@ -107,3 +107,6 @@ model.fit( training_input, training_output_hbond, epochs=num_epochs, batch_size=
 scores = model.evaluate( test_input, test_output_hbond )
 print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
+#for each in test_input:
+#    print( each )
+#    print( "\t" + str( model.predict( numpy.reshape( each , 9 ) ) ) )
