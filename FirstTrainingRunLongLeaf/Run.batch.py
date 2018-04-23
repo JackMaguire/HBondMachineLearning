@@ -13,6 +13,8 @@ import keras
 import numpy
 
 import sys
+sys.path.append("/nas/longleaf/home/jackmag")#for h5py
+import h5py
 
 import argparse
 import random
