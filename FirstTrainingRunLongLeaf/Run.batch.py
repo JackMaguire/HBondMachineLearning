@@ -1,3 +1,7 @@
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
 #from keras import *
 from keras.models import Sequential
 from keras.layers import Dense
