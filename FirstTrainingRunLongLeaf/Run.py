@@ -253,7 +253,7 @@ for x in range( 0, num_epochs ):
     print( "Beginning epoch: " + str(x) )
     
     shuffle_in_unison( training_input, training_output_hbond )
-    model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={ 0 : 1, 1 : weight1 } )
+    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 10 == 0 ):
         best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, x )
