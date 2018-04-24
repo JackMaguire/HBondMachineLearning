@@ -213,14 +213,16 @@ def mean_pred( y_true, y_pred ):
 
 # 1) Define Filenames
 #training_input_file = "training.dat"
-testing_input_file = "testing.dat"
+#testing_input_file = "testing.dat"
 
 #training_input, training_output_hbond = generate_data_from_file( training_input_file )
-testing_input, testing_output_hbond = generate_data_from_file( testing_input_file )
+#testing_input, testing_output_hbond = generate_data_from_file( testing_input_file )
 
 training_input = numpy.load( "training.dat.input.npy" )
 training_output_hbond = numpy.load( "training.dat.hbond.npy" )
 
+testing_input = numpy.load( "testing.dat.input.npy" )
+testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
 # 2) Define Model
 
@@ -260,8 +262,8 @@ for x in range( 0, num_epochs ):
 
     #model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
-    if ( x % 2 == 0 ):
-        model.save( "epoch_" + str(x) + ".h5" )
+    if ( x % 25 == 0 ):
+        #model.save( "epoch_" + str(x) + ".h5" )
         best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
 
     end = time.time()
