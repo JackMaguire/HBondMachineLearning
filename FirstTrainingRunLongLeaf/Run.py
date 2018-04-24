@@ -221,11 +221,15 @@ def mean_pred( y_true, y_pred ):
 #########
 
 # 1) Define Filenames
-training_input_file = "training.dat"
+#training_input_file = "training.dat"
 #testing_input_file = "testing.dat"
 
-training_input, training_output_hbond = generate_data_from_file( training_input_file )
+#training_input, training_output_hbond = generate_data_from_file( training_input_file )
 #testing_input, testing_output_hbond = generate_data_from_file( testing_input_file )
+
+training_input = numpy.load( "training.dat.input.npy" )
+training_output_hbond = numpy.load( "training.dat.hbond.npy" )
+
 
 # 2) Define Model
 
