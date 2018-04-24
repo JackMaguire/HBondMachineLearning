@@ -218,32 +218,11 @@ def mean_pred( y_true, y_pred ):
 #########
 
 # 1) Define Filenames
-training_input_files = [ "split_aa", "split_ab", "split_ac", "split_ad", "split_ae", "split_af", "split_ag" ]
-testing_input_files = [ "split_ah", "split_ai", "split_aj" ]
+training_input_file = "training.dat"
+testing_input_file = "testing.dat"
 
-cached_training_input = [ "", "", "", "", "", "", "" ]
-cached_training_output_hbond = [ "", "", "", "", "", "", "" ] 
-for i in range( 0, len(cached_training_input) ):
-    cached_training_input[ i ] = "cached_training_input_" + str(i) + ".npy"
-    cached_training_output_hbond[ i ] = "cached_training_output_hbond_" + str(i) + ".npy"
-
-    training_input_temp, training_output_hbond_temp = generate_data_from_file( training_input_files[ i ] )
-    numpy.save( cached_training_input[ i ], training_input_temp )
-    numpy.save( cached_training_output_hbond[ i ], training_output_hbond_temp )
-
-
-cached_testing_input = [ "", "", "" ]
-cached_testing_output_hbond = [ "", "", "" ]
-for i in range( 0, len(cached_testing_input) ):
-    cached_testing_input[ i ] = "cached_testing_input_" + str(i) + ".npy"
-    cached_testing_output_hbond[ i ] = "cached_testing_output_hbond_" + str(i) + ".npy"
-
-    testing_input_temp, testing_output_hbond_temp = generate_data_from_file( testing_input_files[ i ] )
-    numpy.save( cached_testing_input[ i ], testing_input_temp )
-    numpy.save( cached_testing_output_hbond[ i ], testing_output_hbond_temp )
-
-
-indices = [ 0, 1, 2, 3, 4, 5, 6 ]
+training_input, training_output_hbond = generate_data_from_file( training_input_file )
+testing_input, testing_output_hbond = generate_data_from_file( testing_input_file )
 
 # 2) Define Model
 
@@ -269,15 +248,13 @@ best_score_so_far = 0
 for x in range( 0, num_epochs ):
     start = time.time()
     print( "Beginning epoch: " + str(x) )
-    random.shuffle( indices )
-    for i in indices:
-        training_input_temp = numpy.load( cached_training_input[ i ] )
-        training_output_hbond_temp = numpy.load( cached_training_output_hbond[ i ] )
-        shuffle_in_unison(training_input_temp,training_output_hbond_temp)
+    
+    shuffle_in_unison( training_input, training_output_hbond )
+    model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={ 0 : 1, 1 : weight1 } )
 
-        model.train_on_batch( x=training_input_temp, y=training_output_hbond_temp, class_weight={ 0 : 1, 1 : weight1 } )
     if ( x % 10 == 0 ):
         best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, x )
+
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
