@@ -1,20 +1,18 @@
-import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+#import os
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+#os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
-#from keras import *
-from keras.models import Sequential
-from keras.layers import Dense
-from keras import metrics
+#from keras.models import Sequential
+#from keras.layers import Dense
+#from keras import metrics
 
-#import keras
-from keras.models import load_model
-import keras.backend as K
+#from keras.models import load_model
+#import keras.backend as K
 import numpy
 
 import sys
-import os.path
-import argparse
+#import os.path
+#import argparse
 
 ########
 # INIT #
