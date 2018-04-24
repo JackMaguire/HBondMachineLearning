@@ -130,7 +130,7 @@ def generate_data_from_file( filename ):
    
     return input, output_hbond
 
-def evaluate_model( model, best_score_so_far, testing_input, training_output_hbond, batch ):
+def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, batch ):
     num_positives_actual = 0.
     num_positives_predicted = 0.
     num_positives_actual_and_predicted = 0.
