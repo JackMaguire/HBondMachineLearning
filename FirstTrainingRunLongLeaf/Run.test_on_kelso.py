@@ -130,7 +130,7 @@ def generate_data_from_file( filename ):
    
     return input, output_hbond
 
-def evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, batch ):
+def evaluate_model( model, best_score_so_far, testing_input, training_output_hbond, batch ):
     num_positives_actual = 0.
     num_positives_predicted = 0.
     num_positives_actual_and_predicted = 0.
@@ -138,36 +138,28 @@ def evaluate_model( model, best_score_so_far, cached_testing_input, cached_train
     num_negatives_actual = 0.
     num_negatives_predicted = 0.
     num_negatives_actual_and_predicted = 0.
-
-    for i in range( 0, len(cached_testing_input) ):
-
-        input_cache_filename = cached_testing_input[ i ]
-        hbond_cache_filename = cached_training_output_hbond[ i ]
-
-        test_input = numpy.load( input_cache_filename )
-        test_output_hbond = numpy.load( hbond_cache_filename )
         
-        predictions = model.predict( x=test_input );
+    predictions = model.predict( x=test_input );
 
-        for i in range( 0, len(test_input) ):
+    for i in range( 0, len(test_input) ):
 
-            actual = test_output_hbond[ i ][ 0 ]
-            prediction = predictions[ i ][ 0 ]
+        actual = test_output_hbond[ i ][ 0 ]
+        prediction = predictions[ i ][ 0 ]
 
-            if actual == 0:
-                num_negatives_actual += 1
-                if prediction < 0.5:
-                    num_negatives_predicted += 1
-                    num_negatives_actual_and_predicted += 1
-                else:
-                    num_positives_predicted += 1
+        if actual == 0:
+            num_negatives_actual += 1
+            if prediction < 0.5:
+                num_negatives_predicted += 1
+                num_negatives_actual_and_predicted += 1
             else:
-                num_positives_actual += 1
-                if prediction < 0.5:
-                    num_negatives_predicted += 1
-                else:
-                    num_positives_actual_and_predicted += 1
-                    num_positives_predicted += 1
+                num_positives_predicted += 1
+        else:
+            num_positives_actual += 1
+            if prediction < 0.5:
+                num_negatives_predicted += 1
+            else:
+                num_positives_actual_and_predicted += 1
+                num_positives_predicted += 1
 
     min = 1;
     score1 = num_positives_actual_and_predicted/num_positives_actual
@@ -250,10 +242,18 @@ for x in range( 0, num_epochs ):
     print( "Beginning epoch: " + str(x) )
     
     shuffle_in_unison( training_input, training_output_hbond )
-    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+
+    i=0
+    while i < len(training_input):
+        j = len(training_input) - i
+        if j >  100000:
+            j = 100000
+        i +=    100000
+
+        model.train_on_batch( x=training_input[ i : i+j ], y=training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 10 == 0 ):
-        best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, x )
+        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, training_output_hbond, x )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )

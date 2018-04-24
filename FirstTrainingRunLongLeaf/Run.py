@@ -152,10 +152,10 @@ def evaluate_model( model, best_score_so_far, cached_testing_input, cached_train
         
         predictions = model.predict( x=test_input );
 
-        for i in range( 0, len(test_input) ):
+        for j in range( 0, len(test_input) ):
 
-            actual = test_output_hbond[ i ][ 0 ]
-            prediction = predictions[ i ][ 0 ]
+            actual = test_output_hbond[ j ][ 0 ]
+            prediction = predictions[ j ][ 0 ]
 
             if actual == 0:
                 num_negatives_actual += 1
