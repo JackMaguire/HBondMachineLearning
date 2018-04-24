@@ -257,7 +257,17 @@ for x in range( 0, num_epochs ):
     print( "Beginning epoch: " + str(x) )
     
     shuffle_in_unison( training_input, training_output_hbond )
-    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+    i=0
+    while i < len(training_input):
+        j = len(training_input) - i
+        if j >  100000:
+            j = 100000
+        i +=    100000
+
+        model.train_on_batch( x=training_input[ i : i+j ], y=training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
+
+
+    #model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 25 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
