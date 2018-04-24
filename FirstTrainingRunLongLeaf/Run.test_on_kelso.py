@@ -253,7 +253,7 @@ for x in range( 0, num_epochs ):
         model.train_on_batch( x=training_input[ i : i+j ], y=training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 10 == 0 ):
-        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, training_output_hbond, x )
+        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )

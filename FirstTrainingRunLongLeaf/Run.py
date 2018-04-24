@@ -262,7 +262,7 @@ for x in range( 0, num_epochs ):
 
     if ( x % 2 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
-        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, training_output_hbond, x )
+        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
