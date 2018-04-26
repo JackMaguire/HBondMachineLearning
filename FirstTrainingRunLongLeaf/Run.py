@@ -248,6 +248,7 @@ else:
 
 # 4) Fit Model
 best_score_so_far = 0
+best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
 
 for x in range( 0, num_epochs ):
     start = time.time()
@@ -269,9 +270,12 @@ for x in range( 0, num_epochs ):
     if ( x % 25 == 0 ):
         #model.save( "epoch_" + str(x) + ".h5" )
         best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+        if ( x % 100 == 0 ):
+            model.save( "epoch_" + str(x) + ".h5" )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
+    sys.stdout.flush()
 
 model.save( "final.h5" )
 
