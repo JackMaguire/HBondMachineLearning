@@ -157,8 +157,10 @@ def generate_N_elements( N, generator ):
     output_hbond = numpy.empty( [ N, 1 ], dtype=float )
     for i in range( 0, N ):
         data = generator.get_sample()
+        print( str( data.Lowest_HBNet_Score ) + " yyy" )
         while ( data.Lowest_HBNet_Score < 0 and data.Lowest_HBNet_Score > -0.5 ):
             data = generator.get_sample()
+            print( "\t" + str(data.Lowest_HBNet_Score) + " yyy" )
 
         input[ i ][ 0 ] = data.Tx
         input[ i ][ 1 ] = data.Ty
