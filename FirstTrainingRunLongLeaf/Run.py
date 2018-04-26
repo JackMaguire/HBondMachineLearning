@@ -180,7 +180,7 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
         model.save( "best.h5" )
         saved = 1
 
-    print( str(x) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
+    print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
 
     return best_score_so_far
 
