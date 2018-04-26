@@ -7,6 +7,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras import metrics
 
+from keras.models import load_model
 import keras.backend as K
 import keras.callbacks
 import keras
