@@ -137,6 +137,14 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
         model.save( "best2.h5" )
         saved = 1
 
+    print ( "num_positives_actual: " + str(num_positives_actual ) )
+    print ( "num_positives_predicted" + str(num_positives_predicted ) )
+    print ( "num_positives_actual_and_predicted" + str(num_positives_actual_and_predicted ) )
+
+    print ( "num_negatives_actual" + str(num_negatives_actual ) )
+    print ( "num_negatives_predicted" + str(num_negatives_predicted ) )
+    print ( "num_negatives_actual_and_predicted" + str(num_negatives_actual_and_predicted ) )
+
     print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
 
     return best_score_so_far
@@ -235,8 +243,6 @@ else:
     print( "No file with path: " + input_model_filename )
     exit( 1 )
 
-exit( 1 )
-
 testing_input = numpy.load( "testing.dat.input.npy" )
 testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
@@ -248,24 +254,9 @@ hbond_data_generator.init( aa1[0], aa2[0] )
 best_score_so_far = 0
 best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
-x = 0
-while x < num_epochs:
-    start = time.time()
-    print( "Beginning epoch: " + str(x) )
-    
-    training_input, training_output_hbond = generate_N_elements( 10000, hbond_data_generator )
-    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+testing_input, testing_output_hbond = generate_N_elements( 25, hbond_data_generator )
 
-    if ( x % 25 == 0 ):
-        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
-        if ( x % 100 == 0 ):
-            model.save( "epoch_" + str(x) + ".h5" )
+print_data( testing_input, testing_output_hbond )
 
-    end = time.time()
-    print( "\tseconds: " + str( end - start ) )
-    sys.stdout.flush()
-    if not infinite_loop:
-        x += 1
-
-model.save( "final.h5" )
+evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
