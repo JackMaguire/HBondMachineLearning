@@ -235,6 +235,8 @@ else:
     print( "No file with path: " + input_model_filename )
     exit( 1 )
 
+exit( 1 )
+
 testing_input = numpy.load( "testing.dat.input.npy" )
 testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
