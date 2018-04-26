@@ -178,8 +178,8 @@ def generate_N_elements( N, generator ):
         else:
             output_hbond[ i ][ 0 ] = 1
 
-    return input, keras.utils.to_categorical( output_hbond, num_classes=2 )
-    #return input, output_hbond
+    #return input, keras.utils.to_categorical( output_hbond, num_classes=2 )
+    return input, output_hbond
 
 
 #https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
@@ -258,7 +258,7 @@ hbond_data_generator.init( aa1[0], aa2[0] )
 best_score_so_far = 0
 #best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
-testing_input, testing_output_hbond = generate_N_elements( 25, hbond_data_generator )
+testing_input, testing_output_hbond = generate_N_elements( 1000, hbond_data_generator )
 
 print_data( testing_input, testing_output_hbond )
 
