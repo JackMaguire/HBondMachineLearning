@@ -187,10 +187,10 @@ def shuffle_in_unison(a, b):
 
 def print_data( input, output_hbond ):
     print( " " )
-    my_assert_equals( "print_data() input sizes", len(input), len(output))
+    my_assert_equals( "print_data() input sizes", len(input), len(output_hbond))
     for x in len( input ):
-        out_string = str(output[x][0]) + ",0"
-        for y in output[x]:
+        out_string = str(output_hbond[x][0]) + ",0"
+        for y in input[x]:
             out_string += "," + str(y)
         print( out_string )
 
