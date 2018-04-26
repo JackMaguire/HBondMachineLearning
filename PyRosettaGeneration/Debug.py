@@ -247,8 +247,8 @@ else:
     print( "No file with path: " + input_model_filename )
     exit( 1 )
 
-testing_input = numpy.load( "testing.dat.input.npy" )
-testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
+#testing_input = numpy.load( "testing.dat.input.npy" )
+#testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
 
 # 4) Fit Model
@@ -256,7 +256,7 @@ hbond_data_generator = pyrosetta.rosetta.protocols.data_generation.hbond_machine
 hbond_data_generator.init( aa1[0], aa2[0] )
 
 best_score_so_far = 0
-best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+#best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
 testing_input, testing_output_hbond = generate_N_elements( 25, hbond_data_generator )
 
