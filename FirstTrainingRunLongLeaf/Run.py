@@ -226,21 +226,24 @@ testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
 # 2) Define Model
 
-num_input_dimensions = 9
-model = Sequential()
+if os.path.isfile( "best.h5" ):
+    model = load_model( "best.h5" )
+else:
+    num_input_dimensions = 9
+    model = Sequential()
 
-model.add( Dense( num_neurons_in_first_hidden_layer, input_dim=num_input_dimensions, activation='relu') )
+    model.add( Dense( num_neurons_in_first_hidden_layer, input_dim=num_input_dimensions, activation='relu') )
 
-for x in range( 0, num_intermediate_hidden_layers ):
-    model.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
+    for x in range( 0, num_intermediate_hidden_layers ):
+        model.add( Dense( num_neurons_in_intermediate_hidden_layer, activation='relu') )
 
-num_neurons_in_final_layer = int( 1 )
-model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
+    num_neurons_in_final_layer = int( 1 )
+    model.add( Dense( num_neurons_in_final_layer, activation='sigmoid') )
 
-# 3) Compile Model
+    # 3) Compile Model
 
-metrics_to_output=[ 'accuracy' ]
-model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
+    metrics_to_output=[ 'accuracy' ]
+    model.compile( loss='binary_crossentropy', optimizer='adam', metrics=metrics_to_output )
 
 # 4) Fit Model
 best_score_so_far = 0
@@ -269,6 +272,6 @@ for x in range( 0, num_epochs ):
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
 
-
+model.save( "final.h5" )
 
 #best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, num_epochs )
