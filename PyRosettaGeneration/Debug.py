@@ -147,7 +147,7 @@ def generate_N_elements( N, generator ):
     output_hbond = numpy.empty( [ N, 1 ], dtype=float )
     for i in range( 0, N ):
         data = generator.get_sample()
-        while ( data.Lowest_HBNet_Score < 0 && data.Lowest_HBNet_Score > -0.5 ):
+        while ( data.Lowest_HBNet_Score < 0 and data.Lowest_HBNet_Score > -0.5 ):
             data = generator.get_sample()
 
         input[ i ][ 0 ] = data.Tx
@@ -264,7 +264,7 @@ while x < num_epochs:
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
     sys.stdout.flush()
-    if ! infinite_loop:
+    if not infinite_loop:
         x += 1
 
 model.save( "final.h5" )
