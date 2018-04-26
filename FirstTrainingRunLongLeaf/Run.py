@@ -248,7 +248,7 @@ else:
 
 # 4) Fit Model
 best_score_so_far = 0
-best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
 for x in range( 0, num_epochs ):
     start = time.time()
