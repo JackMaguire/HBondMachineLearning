@@ -107,6 +107,8 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
         actual = test_output_hbond[ i ][ 0 ]
         prediction = predictions[ i ][ 0 ]
 
+        print( str(actual) + " " + str(prediction) + " xxx" )
+
         if actual == 0:
             num_negatives_actual += 1
             if prediction < 0.5:
