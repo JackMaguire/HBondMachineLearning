@@ -134,7 +134,7 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
 
     if min >= best_score_so_far:
         best_score_so_far = min
-        model.save( "best2.h5" )
+        model.save( "gen_best2.h5" )
         saved = 1
 
     print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
@@ -166,8 +166,8 @@ def generate_N_elements( N, generator ):
         else:
             output_hbond[ i ][ 0 ] = 1
 
-    return input, keras.utils.to_categorical( output_hbond, num_classes=2 )
-    #return input, output_hbond
+    #return input, keras.utils.to_categorical( output_hbond, num_classes=2 )
+    return input, output_hbond
 
 
 #https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
@@ -248,14 +248,20 @@ while x < num_epochs:
     if ( x % 25 == 0 ):
         best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
         if ( x % 100 == 0 ):
-            model.save( "epoch_" + str(x) + ".h5" )
+            model.save( "gen_epoch_" + str(x) + ".h5" )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
     sys.stdout.flush()
-    if not infinite_loop:
+
+    if infinite_loop:
+        if x == 24:
+            x = 0
+        else:
+            x += 1
+    else:
         x += 1
 
-model.save( "final.h5" )
+model.save( "gen_final.h5" )
 
 #best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, num_epochs )
