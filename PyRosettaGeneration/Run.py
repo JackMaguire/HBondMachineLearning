@@ -123,12 +123,14 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
                 num_positives_predicted += 1
 
     min = 1;
-    score1 = num_positives_actual_and_predicted/num_positives_actual
-    score2 = num_negatives_actual_and_predicted/num_negatives_actual
-    if score1 < min:
-        min = score1
-    if score2 < min:
-        min = score2
+    ppv = num_positives_actual_and_predicted/num_positives_actual
+    npv = num_negatives_actual_and_predicted/num_negatives_actual
+    if ppv < min:
+        #pos_is_limiting_factor = True
+        min = ppv
+    if npv < min:
+        #pos_is_limiting_factor = False
+        min = npv
 
     saved = 0
 
@@ -137,7 +139,7 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
         model.save( "gen_best2.h5" )
         saved = 1
 
-    print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
+    print( str(batch) + " " + str(ppv) + " " + str(npv) + " " + str(saved) )
 
     return best_score_so_far
 
@@ -149,6 +151,7 @@ def generate_N_elements( N, generator ):
         data = generator.get_sample()
         while ( data.Lowest_HBNet_Score < 0 and data.Lowest_HBNet_Score > -0.5 ):
             data = generator.get_sample()
+
 
         input[ i ][ 0 ] = data.Tx
         input[ i ][ 1 ] = data.Ty
@@ -164,6 +167,8 @@ def generate_N_elements( N, generator ):
         if data.Lowest_HBNet_Score == 0:
             output_hbond[ i ][ 0 ] = 0
         else:
+            #print( "!!!" )
+            #exit( 0 )
             output_hbond[ i ][ 0 ] = 1
 
     #return input, keras.utils.to_categorical( output_hbond, num_classes=2 )
@@ -237,15 +242,32 @@ hbond_data_generator.init( aa1[0], aa2[0] )
 best_score_so_far = 0
 best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
+num_pos_points = 0
+num_neg_points = 0
+
 x = 0
 while x < num_epochs:
     start = time.time()
     print( "Beginning epoch: " + str(x) )
     
-    training_input, training_output_hbond = generate_N_elements( 10000, hbond_data_generator )
+    training_input, training_output_hbond = generate_N_elements( 100000, hbond_data_generator )
+    for y in training_output_hbond:
+        if y[ 0 ] == 0 :
+            num_neg_points += 1
+        else:
+            num_pos_points += 1
+
+    if num_pos_points > 1000 and num_neg_points > 1000:
+        weight1 = float( num_neg_points ) / float( num_pos_points )
+        print( "updating weight to: " + str(weight1) )
+    else:
+        print( "Not enough data points to update weight." )
+        print( "num_pos_points: " + str(num_pos_points) )
+        print( "num_neg_points: " + str(num_neg_points) )
+
     model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
-    if ( x % 25 == 0 ):
+    if ( x % 25 == 0 or True ):
         best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
         if ( x % 100 == 0 ):
             model.save( "gen_epoch_" + str(x) + ".h5" )
