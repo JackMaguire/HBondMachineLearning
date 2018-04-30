@@ -250,7 +250,7 @@ while x < num_epochs:
     start = time.time()
     print( "Beginning epoch: " + str(x) )
     
-    training_input, training_output_hbond = generate_N_elements( 100000, hbond_data_generator )
+    training_input, training_output_hbond = generate_N_elements( 1024, hbond_data_generator )
     for y in training_output_hbond:
         if y[ 0 ] == 0 :
             num_neg_points += 1
