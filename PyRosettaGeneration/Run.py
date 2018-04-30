@@ -293,8 +293,8 @@ num_pos_points = 0
 num_neg_points = 0
 
 positive_bias_coeff = 10
-ratio_history = [ -1.0, -1.0, -1.0, -1.0, -1.0 ]
-dynamic_bias_offset = 25
+#ratio_history = [ -1.0, -1.0, -1.0, -1.0, -1.0 ]
+#dynamic_bias_offset = 25
 
 x = 0
 while x < num_epochs:
@@ -316,6 +316,7 @@ while x < num_epochs:
 
     if ( x % 25 == 0 or True ):
         best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+        '''
         ratio = float(1.0-ppv)/float(1.0-npv)
         ratio_history.pop( 0 )
         ratio_history.append( ratio )
@@ -325,6 +326,7 @@ while x < num_epochs:
             print ( "updating positive_bias_coeff from " + str( old_bias ) + " to " + str( positive_bias_coeff ) )
         else:
             dynamic_bias_offset -= 1
+        '''
         if ( x % 100 == 0 ):
             model.save( "gen_epoch_" + str(x) + ".h5" )
 
