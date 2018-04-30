@@ -250,22 +250,23 @@ while x < num_epochs:
     start = time.time()
     print( "Beginning epoch: " + str(x) )
     
-    training_input, training_output_hbond = generate_N_elements( 1024, hbond_data_generator )
-    for y in training_output_hbond:
-        if y[ 0 ] == 0 :
-            num_neg_points += 1
+    for i in range( 0, 10 ):
+        training_input, training_output_hbond = generate_N_elements( 1000, hbond_data_generator )
+        for y in training_output_hbond:
+            if y[ 0 ] == 0 :
+                num_neg_points += 1
+            else:
+                num_pos_points += 1
+
+        if num_pos_points > 100 and num_neg_points > 100:
+            weight1 = float( num_neg_points ) / float( num_pos_points )
+            print( "updating weight to: " + str(weight1) )
         else:
-            num_pos_points += 1
+            print( "Not enough data points to update weight." )
+            print( "num_pos_points: " + str(num_pos_points) )
+            print( "num_neg_points: " + str(num_neg_points) )
 
-    if num_pos_points > 1000 and num_neg_points > 1000:
-        weight1 = float( num_neg_points ) / float( num_pos_points )
-        print( "updating weight to: " + str(weight1) )
-    else:
-        print( "Not enough data points to update weight." )
-        print( "num_pos_points: " + str(num_pos_points) )
-        print( "num_neg_points: " + str(num_neg_points) )
-
-    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+        model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 25 == 0 or True ):
         best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
