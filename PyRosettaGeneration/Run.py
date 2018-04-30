@@ -25,12 +25,21 @@ import h5py
 import argparse
 import random
 import time
+import subprocess
 
 ########
 # INIT #
 ########
 
 numpy.random.seed( 0 )
+
+#Get sha1
+pwd = os.path.realpath(__file__)
+HBondMachineLearning_index = pwd.find( "HBondMachineLearning" )
+path = pwd[:HBondMachineLearning_index]
+full_name = "~/HBondMachineLearning/.git".replace( "~", path )
+sha1 = subprocess.check_output(["git", "--git-dir", full_name, "rev-parse", "HEAD"]).strip()
+print ( "JackMaguire/HBondMachineLearning: " + sha1 )
 
 #########################
 # COMMAND LINE SETTINGS #
