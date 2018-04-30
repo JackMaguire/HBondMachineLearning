@@ -332,11 +332,8 @@ while x < num_epochs:
     print( "\tseconds: " + str( end - start ) )
     sys.stdout.flush()
 
-    if infinite_loop:
-        if x == 24:
+    if infinite_loop and x == 24:
             x = 0
-        else:
-            x += 1
     else:
         x += 1
 
