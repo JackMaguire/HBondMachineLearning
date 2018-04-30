@@ -148,7 +148,9 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
         model.save( "gen_best2.h5" )
         saved = 1
 
-    print( str(batch) + " " + str(ppv) + " " + str(npv) + " " + str(saved) )
+    ratio = float(1.0-ppv)/float(1.0-npv)
+
+    print( str(batch) + " " + str(ppv) + " " + str(npv) + " " + str(saved) + " " + str(ratio) )
 
     return best_score_so_far, ppv, npv
 
