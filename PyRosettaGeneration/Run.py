@@ -185,8 +185,7 @@ def update_positive_bias_coeff( positive_bias_coeff, ratio_history, min_val, max
     else:#bias is too small
         if positive_bias_coeff == max_val:
             return positive_bias_coeff
-        elif:
-            history_is_decreasing( ratio_history ):
+        elif history_is_decreasing( ratio_history ):
             return positive_bias_coeff
         else:
             return positive_bias_coeff + 0.1
@@ -321,7 +320,9 @@ while x < num_epochs:
         ratio_history.pop( 0 )
         ratio_history.append( ratio )
         if dynamic_bias_offset == 0:
+            old_bias = positive_bias_coeff
             positive_bias_coeff = update_positive_bias_coeff( positive_bias_coeff, ratio_history, 1.0, 100.0 )
+            print ( "updating positive_bias_coeff from " + str( old_bias ) + " to " + str( positive_bias_coeff ) )
         else:
             dynamic_bias_offset -= 1
         if ( x % 100 == 0 ):
