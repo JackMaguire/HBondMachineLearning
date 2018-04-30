@@ -150,7 +150,46 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
 
     print( str(batch) + " " + str(ppv) + " " + str(npv) + " " + str(saved) )
 
-    return best_score_so_far
+    return best_score_so_far, ppv, npv
+
+def history_is_increasing( ratio_history ):
+    num_ratios = len( ratio_history )
+    most_recent_ratio = ratio_history[ num_ratios - 1 ]
+    for x in range( 0, num_ratios - 1 ):
+        if ratio_history[ x ] >= most_recent_ratio:
+            return False
+    return True
+
+def history_is_decreasing( ratio_history ):
+    num_ratios = len( ratio_history )
+    most_recent_ratio = ratio_history[ num_ratios - 1 ]
+    for x in range( 0, num_ratios - 1 ):
+        if ratio_history[ x ] <= most_recent_ratio:
+            return False
+    return True
+
+def update_positive_bias_coeff( positive_bias_coeff, ratio_history, min_val, max_val ):
+    #figure out if the ratio is good enough
+    most_recent_ratio = ratio_history[ len(ratio_history) - 1 ]
+    if most_recent_ratio > 0.2 and most_recent_ratio < 5:
+        return positive_bias_coeff
+
+    #figure out which direction we need to move to
+    if most_recent_ratio < 1:#bias is too large
+        if positive_bias_coeff == min_val:
+            return positive_bias_coeff
+        elif history_is_increasing( ratio_history ):#let the dust settle first
+            return positive_bias_coeff
+        else:
+            return positive_bias_coeff - 0.1#maybe make this step size more dynamic?
+    else:#bias is too small
+        if positive_bias_coeff == max_val:
+            return positive_bias_coeff
+        elif:
+            history_is_decreasing( ratio_history ):
+            return positive_bias_coeff
+        else:
+            return positive_bias_coeff + 0.1
 
 def generate_N_elements( N, generator ):
     #returns numpy arrays of dimension (N,9) and (N,1)
@@ -249,36 +288,42 @@ hbond_data_generator = pyrosetta.rosetta.protocols.data_generation.hbond_machine
 hbond_data_generator.init( aa1[0], aa2[0] )
 
 best_score_so_far = 0
-best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
 
 num_pos_points = 0
 num_neg_points = 0
+
+positive_bias_coeff = 10
+ratio_history = [ -1.0, -1.0, -1.0, -1.0, -1.0 ]
+dynamic_bias_offset = 25
 
 x = 0
 while x < num_epochs:
     start = time.time()
     print( "Beginning epoch: " + str(x) )
     
-    for i in range( 0, 10 ):
-        training_input, training_output_hbond = generate_N_elements( 1000, hbond_data_generator )
-        for y in training_output_hbond:
-            if y[ 0 ] == 0 :
-                num_neg_points += 1
-            else:
-                num_pos_points += 1
-
-        if num_pos_points > 100 and num_neg_points > 100:
-            weight1 = float( num_neg_points ) / float( num_pos_points )
-            print( "updating weight to: " + str(weight1) )
+    training_input, training_output_hbond = generate_N_elements( 100000, hbond_data_generator )
+    for y in training_output_hbond:
+        if y[ 0 ] == 0 :
+            num_neg_points += 1
         else:
-            print( "Not enough data points to update weight." )
-            print( "num_pos_points: " + str(num_pos_points) )
-            print( "num_neg_points: " + str(num_neg_points) )
+            num_pos_points += 1
 
-        model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+    if num_pos_points > 100 and num_neg_points > 1000:
+        weight1 = positive_bias_coeff * float( num_neg_points ) / float( num_pos_points )
+        print( "updating weight to: " + str(weight1) )
+
+    model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 25 == 0 or True ):
-        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+        best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+        ratio = float(1.0-ppv)/float(1.0-npv)
+        ratio_history.pop( 0 )
+        ratio_history.append( ratio )
+        if dynamic_bias_offset == 0:
+            positive_bias_coeff = update_positive_bias_coeff( positive_bias_coeff, ratio_history, 1.0, 100.0 )
+        else:
+            dynamic_bias_offset -= 1
         if ( x % 100 == 0 ):
             model.save( "gen_epoch_" + str(x) + ".h5" )
 
