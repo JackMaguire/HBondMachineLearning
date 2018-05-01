@@ -105,8 +105,8 @@ for h in range( 2, len( sys.argv ) ):
     input_cache_filename = filename + ".input.npy"
     hbond_cache_filename = filename + ".hbond.npy"
 
-    input_cache_filename = replace_last_instance_of_substring( input_cache_filename, "/", "/_" )
-    hbond_cache_filename = replace_last_instance_of_substring( hbond_cache_filename, "/", "/_" )
+    #input_cache_filename = replace_last_instance_of_substring( input_cache_filename, "/", "/_" )
+    #hbond_cache_filename = replace_last_instance_of_substring( hbond_cache_filename, "/", "/_" )
 
     if os.path.isfile( input_cache_filename ) and os.path.isfile( hbond_cache_filename ):
         test_input = numpy.load( input_cache_filename )
@@ -139,12 +139,19 @@ for h in range( 2, len( sys.argv ) ):
                 num_positives_actual_and_predicted += 1
                 num_positives_predicted += 1
 
+ppv=num_positives_actual_and_predicted/num_positives_actual
+npv=num_negatives_actual_and_predicted/num_negatives_actual
+
+min_score = ppv
+if npv < ppv:
+    min_score = npv
             
 print( str(num_positives_actual_and_predicted) + " " +
        str(num_positives_actual) + " " +
-       str(num_positives_actual_and_predicted/num_positives_actual) + " " +
+       str(ppv) + " " +
        str(num_negatives_actual_and_predicted) + " " +
        str(num_negatives_actual) + " " +
-       str(num_negatives_actual_and_predicted/num_negatives_actual)
+       str(npv) + " " +
+       str(min_score)
 )
 
