@@ -145,7 +145,7 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
 
     if min >= best_score_so_far:
         best_score_so_far = min
-        model.save( "gen_best2.h5" )
+        model.save( "gen_best.h5" )
         saved = 1
 
     ratio = float(1.0-ppv)/float(1.0-npv)
@@ -316,28 +316,28 @@ while x < num_epochs:
 
     model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
 
-    if ( x % 25 == 0 or True ):
-        best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
-        '''
-        ratio = float(1.0-ppv)/float(1.0-npv)
-        ratio_history.pop( 0 )
-        ratio_history.append( ratio )
-        if dynamic_bias_offset == 0:
-            old_bias = positive_bias_coeff
-            positive_bias_coeff = update_positive_bias_coeff( positive_bias_coeff, ratio_history, 1.0, 100.0 )
-            print ( "updating positive_bias_coeff from " + str( old_bias ) + " to " + str( positive_bias_coeff ) )
-        else:
-            dynamic_bias_offset -= 1
-        '''
-        if ( x % 100 == 0 ):
-            model.save( "gen_epoch_" + str(x) + ".h5" )
+    #if ( True ):
+    best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
+    '''
+    ratio = float(1.0-ppv)/float(1.0-npv)
+    ratio_history.pop( 0 )
+    ratio_history.append( ratio )
+    if dynamic_bias_offset == 0:
+        old_bias = positive_bias_coeff
+        positive_bias_coeff = update_positive_bias_coeff( positive_bias_coeff, ratio_history, 1.0, 100.0 )
+    print ( "updating positive_bias_coeff from " + str( old_bias ) + " to " + str( positive_bias_coeff ) )
+    else:
+    dynamic_bias_offset -= 1
+    '''
+    if ( x % 10 == 0 ):
+        model.save( "gen_epoch_" + str(x) + ".h5" )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
     sys.stdout.flush()
 
-    if infinite_loop and x == 24:
-            x = 0
+    if infinite_loop and x == num_epochs - 1:
+        x = 0
     else:
         x += 1
 
