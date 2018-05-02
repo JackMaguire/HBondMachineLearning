@@ -285,11 +285,24 @@ testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
 
 # 4) Fit Model
+print( "Beginning step4" )
+sys.stdout.flush()
+
 hbond_data_generator = pyrosetta.rosetta.protocols.data_generation.hbond_machine_learning.HBondDataGenerator()
+
+print( "Finished hbond_data_generator = pyrosetta.rosetta.protocols.data_generation.hbond_machine_learning.HBondDataGenerator()" )
+sys.stdout.flush()
+
 hbond_data_generator.init( aa1[0], aa2[0] )
+
+print( "Finished hbond_data_generator.init( aa1[0], aa2[0] )" )
+sys.stdout.flush()
 
 best_score_so_far = 0
 best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+
+print( "Finished best_score_so_far, ppv, npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )" )
+sys.stdout.flush()
 
 num_pos_points = 0
 num_neg_points = 0
@@ -302,7 +315,7 @@ x = 0
 while x < num_epochs:
     start = time.time()
     print( "Beginning epoch: " + str(x) )
-    
+    sys.stdout.flush()
     training_input, training_output_hbond = generate_N_elements( 100000, hbond_data_generator )
     for y in training_output_hbond:
         if y[ 0 ] == 0 :
