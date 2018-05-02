@@ -307,7 +307,7 @@ sys.stdout.flush()
 num_pos_points = 0
 num_neg_points = 0
 
-positive_bias_coeff = 10
+positive_bias_coeff = 2
 #ratio_history = [ -1.0, -1.0, -1.0, -1.0, -1.0 ]
 #dynamic_bias_offset = 25
 
