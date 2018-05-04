@@ -145,7 +145,7 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
 
     if min >= best_score_so_far:
         best_score_so_far = min
-        model.save( "gen_best.h5" )
+        model.save( "gen2_best.h5" )
         saved = 1
 
     ratio = float(1.0-ppv)/float(1.0-npv)
@@ -342,8 +342,7 @@ while x < num_epochs:
     else:
     dynamic_bias_offset -= 1
     '''
-    if ( x % 10 == 0 ):
-        model.save( "gen_epoch_" + str(x) + ".h5" )
+    model.save( "gen2_epoch_" + str(x) + ".h5" )
 
     end = time.time()
     print( "\tseconds: " + str( end - start ) )
@@ -354,6 +353,6 @@ while x < num_epochs:
     else:
         x += 1
 
-model.save( "gen_final.h5" )
+model.save( "gen2_final.h5" )
 
 #best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, num_epochs )
