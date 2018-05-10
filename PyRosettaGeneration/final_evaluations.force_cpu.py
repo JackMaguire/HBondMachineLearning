@@ -80,41 +80,17 @@ def replace_last_instance_of_substring(s, old, new):
     li = s.rsplit(old, 1)
     return new.join(li)
 
-#########################
-# COMMAND LINE SETTINGS #
-#########################
+def evaluate_model( model, test_input, test_output_hbond ):
+    num_positives_actual = 0.
+    num_positives_predicted = 0.
+    num_positives_actual_and_predicted = 0.
 
-#all args are modelnames!
-#rest: datafile names
-
-model_filename = sys.argv[ 1 ]
-
-num_positives_actual = 0.
-num_positives_predicted = 0.
-num_positives_actual_and_predicted = 0.
-
-num_negatives_actual = 0.
-num_negatives_predicted = 0.
-num_negatives_actual_and_predicted = 0.
-
-if os.path.isfile( input_cache_filename ) and os.path.isfile( hbond_cache_filename ):
-    test_input = numpy.load( input_cache_filename )
-    test_output_hbond = numpy.load( hbond_cache_filename )
-else:
-    print( "Error! test input does not exist" )
-
-
-for h in range( 1, len( sys.argv ) ):
-
-    model_filename = sys.argv[ h ]
-    model = load_model( model_filename )
-
-    input_cache_filename = "testing.dat.input.npy"
-    hbond_cache_filename = "testing.dat.hbond.npy"
+    num_negatives_actual = 0.
+    num_negatives_predicted = 0.
+    num_negatives_actual_and_predicted = 0.
         
     predictions = model.predict( x=test_input );
 
-    #print( str(len(test_input)) + " " + str(len(predictions)))
     for i in range( 0, len(test_input) ):
 
         actual = test_output_hbond[ i ][ 0 ]
@@ -135,19 +111,37 @@ for h in range( 1, len( sys.argv ) ):
                 num_positives_actual_and_predicted += 1
                 num_positives_predicted += 1
 
-ppv=num_positives_actual_and_predicted/num_positives_actual
-npv=num_negatives_actual_and_predicted/num_negatives_actual
+    ppv = num_positives_actual_and_predicted/num_positives_actual
+    npv = num_negatives_actual_and_predicted/num_negatives_actual
+    return ppv, npv
 
-min_score = ppv
-if npv < ppv:
-    min_score = npv
-            
-print( str(num_positives_actual_and_predicted) + " " +
-       str(num_positives_actual) + " " +
-       str(ppv) + " " +
-       str(num_negatives_actual_and_predicted) + " " +
-       str(num_negatives_actual) + " " +
-       str(npv) + " " +
-       str(min_score)
-)
+
+
+#########################
+# COMMAND LINE SETTINGS #
+#########################
+
+#all args are modelnames!
+
+input_cache_filename = "testing.dat.input.npy"
+hbond_cache_filename = "testing.dat.hbond.npy"
+
+if os.path.isfile( input_cache_filename ) and os.path.isfile( hbond_cache_filename ):
+    test_input = numpy.load( input_cache_filename )
+    test_output_hbond = numpy.load( hbond_cache_filename )
+else:
+    print( "Error! test input does not exist" )
+    exit( 1 )
+
+native_input, native_hbond = generate_data_from_file( "native.csv" )
+
+print( "model_filename\ttest_ppv\ttest_npv\tnative_ppv\tnative_npv" )
+
+for h in range( 1, len( sys.argv ) ):
+    model_filename = sys.argv[ h ]
+    model = load_model( model_filename )
+    test_ppv, test_npv = evaluate_model( model, test_input, test_output_hbond )
+    native_ppv, native_npv = evaluate_model( model, native_input, native_hbond )
+    print( model_filename + "\t" + str( test_ppv ) + "\t" + str( test_npv ) + "\t" + str( native_ppv ) + "\t" + str( native_npv ) )
+    sys.stdout.flush()
 
