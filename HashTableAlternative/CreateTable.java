@@ -7,7 +7,7 @@ public class CreateTable {
       0,1      ,2        ,3       ,4       ,5        ,6         ,7      ,8      ,9      ,10
      */
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
 	
 	//Args:
 	//0 comma-separated list of input csv files
@@ -26,7 +26,12 @@ public class CreateTable {
 	final String output_File = args[ 1 ];
 	final int nbins = Integer.parseInt( args[ 2 ] );
 
-	Table t = new Table( nbins );
+	MinMax[] value_ranges = new MinMax[ 3 ];
+	value_ranges[ 0 ] = get_min_and_max_for_column( 8, input_files );
+	value_ranges[ 1 ] = get_min_and_max_for_column( 9, input_files );
+	value_ranges[ 2 ] = get_min_and_max_for_column( 10, input_files );
+
+	Table t = new Table( nbins, value_ranges );
 
     }
 

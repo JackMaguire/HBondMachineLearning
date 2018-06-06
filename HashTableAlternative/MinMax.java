@@ -11,4 +11,17 @@ public class MinMax {
 	min = src.min;
 	max = src.max;
     }
+
+    public MinMax( String s ) throws Exception{
+	String[] split = s.split( "_" );
+	if( split.length != 2 ){
+	    throw new Exception( "MinMax can not parse String: " + s );
+	}
+	min = Double.parseDouble( split[ 0 ] );
+	max = Double.parseDouble( split[ 1 ] );
+    }
+
+    public String toString(){
+	return min + "_" + max;
+    }
 }
