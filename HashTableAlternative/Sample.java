@@ -13,14 +13,13 @@ public class Sample {
 	num_positive_data_points = src.num_positive_data_points;
     }
 
-    public Sample( String s ){
+    public Sample( String s ) throws Exception{
 	String[] split = s.split( "_" );
 	if( split.length != 2 ){
 	    throw new Exception( "Sample can not parse String: " + s );
 	}
 	num_data_points = Long.parseLong( split[ 0 ] );
 	num_positive_data_points = Long.parseLong( split[ 1 ] );
-
     }
 
     public String toString(){
