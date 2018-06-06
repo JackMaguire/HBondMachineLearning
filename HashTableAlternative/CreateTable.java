@@ -2,6 +2,11 @@ import java.io.*;
 
 public class CreateTable {
 
+    /*
+      0,249.336,-0.854788,0.950156,-3.58892,-0.907735,-0.0685858,1.28586,1.83715,2.18063,3.8097
+      0,1      ,2        ,3       ,4       ,5        ,6         ,7      ,8      ,9      ,10
+     */
+
     public static void main(String[] args){
 	
 	//Args:
@@ -9,8 +14,66 @@ public class CreateTable {
 	//1 output file
 	//2 number of bins per DOF
 
-	Table t;
+	if( args.length < 3 ){
+	    System.err.println( "Arguments:" );
+	    System.err.println( "1: comma-separated list of input csv files" );
+	    System.err.println( "2: output file" );
+	    System.err.println( "3: number of bins per DOF" );
+	    System.exit( 1 );
+	}
 
+	final String[] input_files = args[ 0 ].split( "," );
+	final String output_File = args[ 1 ];
+	final int nbins = Integer.parseInt( args[ 2 ] );
+
+	Table t = new Table( nbins );
+
+    }
+
+    public static MinMax get_min_and_max_for_column( final int zero_indexed_col_no, final String[] filenames ) throws IOException{
+
+	final MinMax mm = new MinMax();
+
+	for( String filename : filenames ){
+	    final BufferedReader in = new BufferedReader( new FileReader( filename ) );
+	    for( String line = in.readLine(); line != null; line = in.readLine() ){
+		final String[] split = line.split( "," );
+		if( split.length != 11 ){
+		    System.err.println( "split.length != 11, == " + split.length );
+		    System.err.println( filename );
+		    System.err.println( line );
+		    System.exit( 1 );
+		}
+
+		final double value = Double.parseDouble( split[ zero_indexed_col_no ] );
+		if( value < mm.min ){
+		    mm.min = value;
+		}
+
+		if( value > mm.max ){
+		    mm.max = value;
+		}
+	    }
+	    in.close();
+	}
+
+	return mm;
+
+    }
+
+    private static class MinMax {
+	public double min;
+	public double max;
+
+	public MinMax(){
+	    min = 99999;
+	    max = -99999;
+	}
+
+	public MinMax( MinMax src ){
+	    min = src.min;
+	    max = src.max;
+	}
     }
 
 }
