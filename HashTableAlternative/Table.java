@@ -2,13 +2,13 @@ import java.io.*;
 public class Table {
 
     private int nbins_;
-    private Sample[][][] data_;
     private MinMax[] value_ranges_;
+    private Sample[][][] data_;
 
     public Table( final int nbins, final MinMax[] value_ranges ){
 	nbins_ = nbins;
-	data_ = new Sample[ nbins ][ nbins ][ nbins ];
 	value_ranges_ = value_ranges;
+	data_ = new Sample[ nbins ][ nbins ][ nbins ];
     }
 
     public Table( final String filename ) throws IOException {
@@ -17,6 +17,8 @@ public class Table {
 
     public void load( final String filename ) throws IOException {
 
+
+
     }
 
     public void save( final String filename ) throws IOException {
@@ -24,8 +26,18 @@ public class Table {
 	
 	out.write( nbins_ + "\n" );
 
-	
-	//out.write( + "\n" );
+	for ( MinMax mm : value_ranges_ ){
+	    out.write( mm.toString() + "\n" );
+	}
+
+	for( int i=0; i<nbins_; ++i ){
+	    for( int j=0; j<nbins_; ++j ){
+		for( int k=0; k<nbins_; ++k ){
+		    out.write( data_[ i ][ j ][ k ] + "_" );
+		}
+	    }
+	}
+	out.write( "\n" );
 
 	out.close();
     }
