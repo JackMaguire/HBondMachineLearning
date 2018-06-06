@@ -7,9 +7,14 @@ public class MinMax {
 	max = -99999;
     }
 
-    public MinMax( MinMax src ){
+    public MinMax( final MinMax src ){
 	min = src.min;
 	max = src.max;
+    }
+
+    public MinMax( final double min_val, final double max_val ){
+	min = min_val;
+	max = max_val;
     }
 
     public MinMax( String s ) throws Exception{
