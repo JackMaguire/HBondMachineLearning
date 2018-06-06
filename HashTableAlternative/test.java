@@ -9,7 +9,7 @@ public class test{
     }
 
     public static boolean test_table_io( boolean verbose ){
-	final String filename = "temp_file";
+	final String filename = "test_table_io.dat";
 
 	try {
 
