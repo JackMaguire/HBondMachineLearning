@@ -63,7 +63,7 @@ public class Table {
 	    return bin;
     }
 
-    public void load( final String filename ) throws Exception {
+    private void load( final String filename ) throws Exception {
 	BufferedReader in = new BufferedReader( new FileReader( filename ) );
 
 	nbins_ = Integer.parseInt( in.readLine() );
@@ -74,7 +74,7 @@ public class Table {
 
 	final String data_string = in.readLine();
 	final String[] data_string_split = data_string.split( "x" );
-	final long expected_length = (nbins_ * nbins_ * nbins_) + 1;
+	final long expected_length = nbins_ * nbins_ * nbins_;//Apparently there is no +1 because the final element is of length 0
 	if( data_string_split.length != expected_length ){
 	    throw new Exception( "data_string_split is of length " + data_string_split.length + " instead of " + expected_length );
 	}
@@ -88,7 +88,7 @@ public class Table {
 		}
 	    }
 	}
-	if( counter != expected_length - 1 ){
+	if( counter != expected_length ){
 	    throw new Exception( "counter is equal to " + counter + " instead of " + (expected_length - 1) );
 	}
 
@@ -114,6 +114,25 @@ public class Table {
 	out.write( "\n" );
 
 	out.close();
+    }
+
+    public boolean assert_equality( final Table other ){
+	if( nbins_ != other.nbins_ ) return false;
+	for( int i=0; i<3; ++i ){
+	    if( Math.abs( value_ranges_[ i ].min - other.value_ranges_[ i ].min ) > 0.1 ) return false;
+	    if( Math.abs( value_ranges_[ i ].max - other.value_ranges_[ i ].max ) > 0.1 ) return false;
+	}
+
+	for( int i=0; i<nbins_; ++i ){
+	    for( int j=0; j<nbins_; ++j ){
+		for( int k=0; k<nbins_; ++k ){
+		    if( data_[ i ][ j ][ k ].num_data_points != other.data_[ i ][ j ][ k ].num_data_points ) return false;
+		    if( data_[ i ][ j ][ k ].num_positive_data_points != other.data_[ i ][ j ][ k ].num_positive_data_points ) return false;
+		}
+	    }
+	}
+
+	return true;
     }
 
 }
