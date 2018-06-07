@@ -23,7 +23,7 @@ public class CreateTable {
 	}
 
 	final String[] input_files = args[ 0 ].split( "," );
-	final String output_File = args[ 1 ];
+	final String output_file = args[ 1 ];
 	final int nbins = Integer.parseInt( args[ 2 ] );
 
 	MinMax[] value_ranges = new MinMax[ 3 ];
@@ -31,11 +31,13 @@ public class CreateTable {
 	value_ranges[ 1 ] = get_min_and_max_for_column( 9, input_files );
 	value_ranges[ 2 ] = get_min_and_max_for_column( 10, input_files );
 
-	Table t = new Table( nbins, value_ranges );
+	final Table t = new Table( nbins, value_ranges );
+	populate_table( t, input_files );
+	t.save( output_file );
 
     }
 
-    public static void populate_table( final Table t, final String[] input_files ){
+    public static void populate_table( final Table t, final String[] input_files ) throws Exception {
 	for( String filename : input_files ){
 	    final BufferedReader in = new BufferedReader( new FileReader( filename ) );
 	    for( String line = in.readLine(); line != null; line = in.readLine() ){
