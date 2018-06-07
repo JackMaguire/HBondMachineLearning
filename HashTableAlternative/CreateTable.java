@@ -35,6 +35,31 @@ public class CreateTable {
 
     }
 
+    public static void populate_table( final Table t, final String[] input_files ){
+	for( String filename : input_files ){
+	    final BufferedReader in = new BufferedReader( new FileReader( filename ) );
+	    for( String line = in.readLine(); line != null; line = in.readLine() ){
+		final String[] split = line.split( "," );
+		if( split.length != 11 ){
+		    //System.err.println( "split.length != 11, == " + split.length );
+		    System.err.println( filename );
+		    System.err.println( line );
+		    throw new Exception( "split.length != 11, == " + split.length );
+		}
+
+		final double dof1 = Double.parseDouble( split[ 8 ] );
+		final double dof2 = Double.parseDouble( split[ 9 ] );
+		final double dof3 = Double.parseDouble( split[ 10 ] );
+
+		final double hbond_score = Double.parseDouble( split[ 0 ] );
+		final boolean is_positive = hbond_score < -0.25;//split between 0 and -0.5. Not expecting to get anything near this line
+
+		t.register( dof1, dof2, dof3, is_positive );
+	    }
+	    in.close();
+	}
+    }
+
     public static MinMax get_min_and_max_for_column( final int zero_indexed_col_no, final String[] filenames ) throws IOException{
 
 	final MinMax mm = new MinMax();
