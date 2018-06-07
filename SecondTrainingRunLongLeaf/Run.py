@@ -315,7 +315,7 @@ for x in range( 0, num_epochs ):
 
         model.train_on_batch( x=training_input[ i : i+j ], y=training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
-    shuffle_in_unison( nonnative_training_input, nonnative_training_output_hbond )
+    shuffle_in_unison( nonnative_training_input, nonnative_training_hbond )
     i=0
     while i < len(nonnative_training_input):
         j = len(nonnative_training_input) - i
