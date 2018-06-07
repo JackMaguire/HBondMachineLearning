@@ -63,7 +63,7 @@ parser.add_argument( "--num_epochs", help="Number of epochs to give to model.fit
 
 parser.add_argument( "--test_predictions", help="filename for test predictions", default="", required=False )
 
-parser.add_argument( "--weight", help="Class weight for 1", default="3.0", required=True )
+#parser.add_argument( "--weight", help="Class weight for 1", default="3.0", required=True )
 
 args = parser.parse_args()
 
@@ -79,8 +79,8 @@ print( "num_intermediate_hidden_layers: " + str( num_intermediate_hidden_layers 
 num_epochs = args.num_epochs #150 is small
 print( "num_epochs: " + str( num_epochs ) )
 
-weight1 = args.weight
-print( "class weight for 1: " + str( weight1 ) );
+#weight1 = args.weight
+#print( "class weight for 1: " + str( weight1 ) );
 
 #########
 # FUNCS #
@@ -101,6 +101,24 @@ def keep_hbond_score( score ):
     if score <= -0.5:
         return true
     return false
+
+def calc_weight( nonnative_training_hbond, training_output_hbond ):
+    num_pos = int( 0 )
+    num_neg = int( 0 )
+    for x in nonnative_training_hbond:
+        for i in range( 0, len(x) ):
+            if x[i] != 0:
+                num_pos += 1
+            else:
+                num_neg += 1
+    for x in training_output_hbond:
+        for i in range( 0, len(x) ):
+            if x[i] != 0:
+                num_pos += 1
+            else:
+                num_neg += 1
+
+    return float( num_neg ) / float( num_pos )
 
 def normalize_single_input( input ):
     input[0] /= 20. #Tx
@@ -165,24 +183,26 @@ def evaluate_model( model, best_score_so_far, test_input, test_output_hbond, bat
                 num_positives_actual_and_predicted += 1
                 num_positives_predicted += 1
 
-    min = 1;
-    score1 = num_positives_actual_and_predicted/num_positives_actual
-    score2 = num_negatives_actual_and_predicted/num_negatives_actual
+    #min = 1;
+    ppv = num_positives_actual_and_predicted/num_positives_actual
+    npv = num_negatives_actual_and_predicted/num_negatives_actual
+    return ppv, npv
+'''
     if score1 < min:
         min = score1
     if score2 < min:
         min = score2
 
     saved = 0
+'''
+    #if min >= best_score_so_far:
+        #best_score_so_far = min
+        #model.save( "best.h5" )
+        #saved = 1
 
-    if min >= best_score_so_far:
-        best_score_so_far = min
-        model.save( "best.h5" )
-        saved = 1
+    #print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
 
-    print( str(batch) + " " + str(score1) + " " + str(score2) + " " + str(saved) )
-
-    return best_score_so_far
+    #return best_score_so_far
 
 #https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
 def shuffle_in_unison(a, b):
@@ -190,6 +210,18 @@ def shuffle_in_unison(a, b):
     numpy.random.shuffle(a)
     numpy.random.set_state(rng_state)
     numpy.random.shuffle(b)
+
+def score( ppv1, npv1, ppv2, npv2 ):
+    min = 1
+    if( ppv1 < min ):
+        min = ppv1
+    if( npv1 < min ):
+        min = npv1
+    if( ppv2 < min ):
+        min = ppv2
+    if( npv2 < min ):
+        min = npv2
+    return min
 
 ###########
 # CLASSES #
@@ -225,6 +257,13 @@ training_output_hbond = numpy.load( "training.dat.hbond.npy" )
 testing_input = numpy.load( "testing.dat.input.npy" )
 testing_output_hbond = numpy.load( "testing.dat.hbond.npy" )
 
+nonnative_training_input = numpy.load( "nonnative.input.npy" )
+nonnative_training_hbond = numpy.load( "nonnative.hbond.npy" )
+
+native_testing_input, native_testing_output_hbond = generate_data_from_file( "native.csv" )
+
+weight1 = calc_weight( nonnative_training_hbond, training_output_hbond )
+
 # 2) Define Model
 
 if os.path.isfile( "best.h5" ):
@@ -248,11 +287,14 @@ else:
 
 # 4) Fit Model
 best_score_so_far = 0
-best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+test_ppv, test_npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+native_ppv, native_npv = evaluate_model( model, best_score_so_far, native_testing_input, native_testing_output_hbond, 0 )
+best_score_so_far = score( test_ppv, test_npv, native_ppv, native_npv )
+print( "0 " + str( test_ppv ) + " " +  str( test_npv ) + " " +  str( native_ppv ) + " " +  str( native_npv ) )
 
 for x in range( 0, num_epochs ):
-    start = time.time()
-    print( "Beginning epoch: " + str(x) )
+    #start = time.time()
+    #print( "Beginning epoch: " + str(x) )
     
     shuffle_in_unison( training_input, training_output_hbond )
     i=0
@@ -264,19 +306,25 @@ for x in range( 0, num_epochs ):
 
         model.train_on_batch( x=training_input[ i : i+j ], y=training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
+    shuffle_in_unison( nonnative_training_input, nonnative_training_output_hbond )
+    i=0
+    while i < len(nonnative_training_input):
+        j = len(nonnative_training_input) - i
+        if j >  10000:
+            j = 10000
+        i +=    10000
 
-    #model.train_on_batch( x=training_input, y=training_output_hbond, class_weight={ 0 : 1, 1 : weight1 } )
+        model.train_on_batch( x=nonnative_training_input[ i : i+j ], y=nonnative_training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
-    if ( x % 25 == 0 ):
-        #model.save( "epoch_" + str(x) + ".h5" )
-        best_score_so_far = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, x )
-        if ( x % 100 == 0 ):
-            model.save( "epoch_" + str(x) + ".h5" )
+    if ( x % 10 == 0 ):
+        model.save( "epoch_" + str(x) + ".h5" )
+        test_ppv, test_npv = evaluate_model( model, best_score_so_far, testing_input, testing_output_hbond, 0 )
+        native_ppv, native_npv = evaluate_model( model, best_score_so_far, native_testing_input, native_testing_output_hbond, 0 )
+        best_score_so_far = score( test_ppv, test_npv, native_ppv, native_npv )
+        print( str( x ) + " " + str( test_ppv ) + " " +  str( test_npv ) + " " +  str( native_ppv ) + " " +  str( native_npv ) + " " + str( best_score_so_far ) )
 
-    end = time.time()
-    print( "\tseconds: " + str( end - start ) )
+    #end = time.time()
+    #print( "\tseconds: " + str( end - start ) )
     sys.stdout.flush()
 
 model.save( "final.h5" )
-
-#best_score_so_far = evaluate_model( model, best_score_so_far, cached_testing_input, cached_training_output_hbond, num_epochs )
