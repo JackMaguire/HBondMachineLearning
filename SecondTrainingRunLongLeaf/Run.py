@@ -323,7 +323,7 @@ for x in range( 0, num_epochs ):
             j = 10000
         i +=    10000
 
-        model.train_on_batch( x=nonnative_training_input[ i : i+j ], y=nonnative_training_output_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
+        model.train_on_batch( x=nonnative_training_input[ i : i+j ], y=nonnative_training_hbond[ i : i+j ], class_weight={ 0 : 1, 1 : weight1 } )
 
     if ( x % 10 == 0 ):
         model.save( "epoch_" + str(x) + ".h5" )
