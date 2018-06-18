@@ -2,7 +2,7 @@ import java.io.*;
 
 public final class EvaluateTable {
 
-    final private static double[] THRESHOLDS = {0.01, 0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+    final private static double[] THRESHOLDS = {0, 0.01, 0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
     final private static int NTHRESH = THRESHOLDS.length;
 
     public static void main( String[] args ) throws Exception{
