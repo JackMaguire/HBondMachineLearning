@@ -41,7 +41,7 @@ public final class EvaluateTable {
     }
 
     public static void evaluateLine( final ResultBundle results, final Table t, final String line ) throws Exception{
-	evaluateLine( results, t, line, 0.5 );
+	evaluateLine( results, t, line, 0.01 );
     }
 
     public static void evaluateLine( final ResultBundle results, final Table t, final String line, final double threshold ) throws Exception{
