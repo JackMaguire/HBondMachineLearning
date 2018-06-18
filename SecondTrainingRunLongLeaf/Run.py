@@ -272,6 +272,7 @@ nonnative_training_hbond = numpy.load( "nonnative.hbond.npy" )
 native_testing_input, native_testing_output_hbond = generate_data_from_file( "native.csv" )
 
 weight1 = calc_weight( nonnative_training_hbond, training_output_hbond )
+print( "weight: " + str( weight1 ) )
 
 # 2) Define Model
 
