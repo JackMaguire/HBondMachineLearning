@@ -24,15 +24,19 @@ public final class EvaluateTable {
 	}
 
 	double min = 1.0;
+	String title = "";
 	String out = "";
 	for( ResultBundle rb : result_bundles ){
 	    final double ppv = rb.ppv();
 	    final double npv = rb.npv();
 	    if( ppv < min ) min = ppv;
 	    if( npv < min ) min = npv;
+	    title += "ppv\tnpv\t";
 	    out += ppv + "\t" + npv + "\t";
 	}
+	title += "min";
 	out += min;
+	System.out.println( title );
 	System.out.println( out );
     }
 
