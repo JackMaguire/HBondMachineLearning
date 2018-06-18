@@ -1,5 +1,5 @@
 import java.io.*;
-public class Table {
+public final class Table {
 
     private int nbins_;
     private MinMax[] value_ranges_;
@@ -34,6 +34,13 @@ public class Table {
 	    ++data_[ bin1 ][ bin2 ][ bin3 ].num_positive_data_points;
 	}
 
+    }
+
+    public Sample getSample( final double dof1, final double dof2, final double dof3 ) throws Exception{
+	final int bin1 = binForValue( dof1, value_ranges_[ 0 ] );
+	final int bin2 = binForValue( dof2, value_ranges_[ 1 ] );
+	final int bin3 = binForValue( dof3, value_ranges_[ 2 ] );
+	return data_[ bin1 ][ bin2 ][ bin3 ];
     }
 
     public int binForValue( final double value, final MinMax mm ) throws Exception{

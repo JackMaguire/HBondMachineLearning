@@ -1,4 +1,4 @@
-public class Sample {
+public final class Sample {
 
     public long num_data_points;
     public long num_positive_data_points;
