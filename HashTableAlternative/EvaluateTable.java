@@ -2,6 +2,9 @@ import java.io.*;
 
 public final class EvaluateTable {
 
+    final private static double[] THRESHOLDS = {0.01, 0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+    final private static int NTHRESH = THRESHOLDS.length;
+
     public static void main( String[] args ) throws Exception{
 
 	//args:
@@ -10,34 +13,40 @@ public final class EvaluateTable {
 
 	final Table t = new Table( args[ 0 ] );
 
-	final ResultBundle[] result_bundles = new ResultBundle[ args.length - 1 ];
+	final ResultBundle[][] result_bundles = new ResultBundle[ args.length - 1 ][ NTHRESH ];
 
 	for( int i=1; i<args.length; ++i ){
-	    result_bundles[ i-1 ] = new ResultBundle();
+	    for( int j=0; j<NTHRESH; ++j )
+		result_bundles[ i-1 ][ j ] = new ResultBundle();
 
 	    final String filename = args[ i ];
 	    final BufferedReader in = new BufferedReader( new FileReader( filename ) );
 	    for( String line = in.readLine(); line != null; line = in.readLine() ){
-		evaluateLine( result_bundles[ i-1 ], t, line );
+		for( int j=0; j<NTHRESH; ++j )
+		    evaluateLine( result_bundles[ i-1 ][ j ], t, line, THRESHOLDS[ j ] );
 	    }
 	    in.close();
 	}
 
-	double min = 1.0;
-	String title = "";
-	String out = "";
-	for( ResultBundle rb : result_bundles ){
-	    final double ppv = rb.ppv();
-	    final double npv = rb.npv();
-	    if( ppv < min ) min = ppv;
-	    if( npv < min ) min = npv;
-	    title += "ppv\tnpv\t";
-	    out += ppv + "\t" + npv + "\t";
+	//okay we're iterating the yucky, cache-poor way
+	for( int j=0; j<NTHRESH; ++j ){
+	    double min = 1.0;
+	    String title = "";
+	    String out = THRESHOLDS[ j ] + "\t";
+	    for( int i=0; i<result_bundles.length; ++i ){
+		ResultBundle rb = result_bundles[ i ][ j ];
+		final double ppv = rb.ppv();
+		final double npv = rb.npv();
+		if( ppv < min ) min = ppv;
+		if( npv < min ) min = npv;
+		title += "ppv\tnpv\t";
+		out += ppv + "\t" + npv + "\t";
+	    }
+	    title += "min";
+	    out += min;
+	    //System.out.println( title );
+	    System.out.println( out );
 	}
-	title += "min";
-	out += min;
-	System.out.println( title );
-	System.out.println( out );
     }
 
     public static void evaluateLine( final ResultBundle results, final Table t, final String line ) throws Exception{
